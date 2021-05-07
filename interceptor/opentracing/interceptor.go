@@ -8,7 +8,7 @@ import (
 	"github.com/soyacen/easyhttp"
 )
 
-func Opentracing() easyhttp.Interceptor {
+func Opentracing(tracer opentracing.Tracer, opts ...Option) easyhttp.Interceptor {
 	once := sync.Once{}
 	return func(cli *easyhttp.Client, req *easyhttp.Request, do easyhttp.Doer) (reply *easyhttp.Reply, err error) {
 		once.Do(func() {
@@ -16,9 +16,10 @@ func Opentracing() easyhttp.Interceptor {
 				RoundTripper: cli.RawClient().Transport,
 			}
 		})
-		reqWithTrace, ht := nethttp.TraceRequest(tracer, req.RawRequest(), opts...)
+		traceReq, ht := nethttp.TraceRequest(tracer, req.RawRequest(), opts...)
 		defer ht.Finish()
-		newReq := req.WithRawRequest(reqWithTrace)
+		newRawReq := req(traceReq)
 
+		return do(cli, newReq)
 	}
 }

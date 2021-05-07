@@ -81,6 +81,10 @@ type Client struct {
 	rawClient *http.Client
 }
 
+func (cli *Client) SetRawClient(rawClient *http.Client) {
+	cli.rawClient = rawClient
+}
+
 func (cli *Client) RawClient() *http.Client {
 	return cli.rawClient
 }

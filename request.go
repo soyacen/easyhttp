@@ -7,6 +7,10 @@ type Request struct {
 	opts       *executeOptions
 }
 
+func (r *Request) SetRawRequest(rawRequest *http.Request) {
+	r.rawRequest = rawRequest
+}
+
 func (r *Request) RawRequest() *http.Request {
 	return r.rawRequest
 }
