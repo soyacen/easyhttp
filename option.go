@@ -1,7 +1,6 @@
 package easyhttp
 
 import (
-	"io"
 	"net/http"
 )
 
@@ -10,7 +9,6 @@ type executeOptions struct {
 	interceptor  Interceptor
 
 	client *http.Client
-	body   io.Reader
 }
 
 func defaultExecuteOptions() *executeOptions {

@@ -144,13 +144,9 @@ func (cli *Client) Execute(ctx context.Context, method string, url string, opts 
 	options.apply(opts...)
 	request := &Request{opts: options}
 	var rawReq *http.Request
-	if isBodySupported(method) {
-		rawReq, err = http.NewRequestWithContext(ctx, method, url, options.body)
-		if err != nil {
-			return nil, err
-		}
-	} else {
-		rawReq, err = http.NewRequestWithContext(ctx, method, url, nil)
+	rawReq, err = http.NewRequestWithContext(ctx, method, url, nil)
+	if err != nil {
+		return nil, err
 	}
 	request.rawRequest = rawReq
 

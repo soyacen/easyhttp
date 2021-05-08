@@ -1,3 +1,5 @@
+github.com/soyacen/goutils/stringutils v0.0.0-20210507074200-5eab83fca942 h1:HeHbI3By6bmPDmsgGQ0ANNLexKL2vnM+JdR0lHkmNHA=
+github.com/soyacen/goutils/stringutils v0.0.0-20210507074200-5eab83fca942/go.mod h1:j+MC3Z6FtFj/ZL/0euaqAKAly0ezNNkAIyaD/ExKDTI=
 golang.org/x/net v0.0.0-20210427231257-85d9c07bbe3a h1:njMmldwFTyDLqonHMagNXKBWptTBeDZOdblgaDsNEGQ=
 golang.org/x/net v0.0.0-20210427231257-85d9c07bbe3a/go.mod h1:OJAsFXCWl8Ukc7SiCT/9KSuxbyM7479/AVlXFRxuMCk=
 golang.org/x/sys v0.0.0-20201119102817-f84b799fce68/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=

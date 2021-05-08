@@ -5,6 +5,7 @@ import (
 
 	"github.com/opentracing-contrib/go-stdlib/nethttp"
 	"github.com/opentracing/opentracing-go"
+
 	"github.com/soyacen/easyhttp"
 )
 
@@ -18,8 +19,7 @@ func Opentracing(tracer opentracing.Tracer, opts ...Option) easyhttp.Interceptor
 		})
 		traceReq, ht := nethttp.TraceRequest(tracer, req.RawRequest(), opts...)
 		defer ht.Finish()
-		newRawReq := req(traceReq)
-
-		return do(cli, newReq)
+		req.SetRawRequest(traceReq)
+		return do(cli, req)
 	}
 }
