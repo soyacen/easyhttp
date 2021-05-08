@@ -8,7 +8,8 @@ import (
 	"net/url"
 
 	"github.com/soyacen/easyhttp"
-	easyhttpbody "github.com/soyacen/easyhttp/interceptor/form"
+
+	easyhttpbody "github.com/soyacen/easyhttp/interceptor/body"
 )
 
 func ExampleJSONString() {

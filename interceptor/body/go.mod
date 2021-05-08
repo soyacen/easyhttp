@@ -1,4 +1,4 @@
-module github.com/soyacen/easyhttp/interceptor/form
+module github.com/soyacen/easyhttp/interceptor/body
 
 go 1.16
 
