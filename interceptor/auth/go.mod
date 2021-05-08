@@ -1,4 +1,4 @@
-module github.com/soyacen/easyhttp/interceptor/query
+module github.com/soyacen/easyhttp/interceptor/auth
 
 go 1.16
 
