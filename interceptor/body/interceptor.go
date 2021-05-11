@@ -15,13 +15,14 @@ import (
 )
 
 var (
-	ContentTypeKey   = http.CanonicalHeaderKey("Content-Type")
-	ContentLengthKey = http.CanonicalHeaderKey("Content-Length")
+	kContentTypeKey   = http.CanonicalHeaderKey("Content-Type")
+	kContentLengthKey = http.CanonicalHeaderKey("Content-Length")
 )
 
 const (
-	FormContentType = "application/x-www-form-urlencoded"
-	JsonContentType = "application/json"
+	kFormContentType = "application/x-www-form-urlencoded"
+	kJsonContentType = "application/json"
+	kXMLContentType  = "application/xml"
 )
 
 func setContent(bodyBuf *bytebufferpool.ByteBuffer, req *easyhttp.Request, ct string) {
@@ -35,8 +36,8 @@ func setContent(bodyBuf *bytebufferpool.ByteBuffer, req *easyhttp.Request, ct st
 	if rawRequest.Header == nil {
 		rawRequest.Header = make(http.Header)
 	}
-	rawRequest.Header.Set(ContentTypeKey, ct)
-	rawRequest.Header.Set(ContentLengthKey, strconv.Itoa(bodyBuf.Len()))
+	rawRequest.Header.Set(kContentTypeKey, ct)
+	rawRequest.Header.Set(kContentLengthKey, strconv.Itoa(bodyBuf.Len()))
 }
 
 func writeObj(obj interface{}, bodyBuf *bytebufferpool.ByteBuffer, marshal func(v interface{}) ([]byte, error)) error {
@@ -67,39 +68,35 @@ func Form(form url.Values) easyhttp.Interceptor {
 		bodyBuf := bytebufferpool.Get()
 		bodyBuf.Write(data)
 		defer bodyBuf.Free()
-		setContent(bodyBuf, req, FormContentType)
+		setContent(bodyBuf, req, kFormContentType)
 		return do(cli, req)
 	}
 }
 
 func JSON(obj interface{}, marshalFunc ...func(v interface{}) ([]byte, error)) easyhttp.Interceptor {
-	return func(cli *easyhttp.Client, req *easyhttp.Request, do easyhttp.Doer) (reply *easyhttp.Reply, err error) {
-		marshal := json.Marshal
-		if len(marshalFunc) > 0 {
-			marshal = marshalFunc[0]
-		}
-		bodyBuf := bytebufferpool.Get()
-		defer bodyBuf.Free()
-		if err := writeObj(obj, bodyBuf, marshal); err != nil {
-			return nil, err
-		}
-		setContent(bodyBuf, req, JsonContentType)
-		return do(cli, req)
+	marshal := json.Marshal
+	if len(marshalFunc) > 0 {
+		marshal = marshalFunc[0]
 	}
+	return Object(obj, kJsonContentType, marshal)
 }
 
 func XML(obj interface{}, marshalFunc ...func(v interface{}) ([]byte, error)) easyhttp.Interceptor {
+	marshal := xml.Marshal
+	if len(marshalFunc) > 0 {
+		marshal = marshalFunc[0]
+	}
+	return Object(obj, kXMLContentType, marshal)
+}
+
+func Object(obj interface{}, contentType string, marshalFunc func(v interface{}) ([]byte, error)) easyhttp.Interceptor {
 	return func(cli *easyhttp.Client, req *easyhttp.Request, do easyhttp.Doer) (reply *easyhttp.Reply, err error) {
-		marshal := xml.Marshal
-		if len(marshalFunc) > 0 {
-			marshal = marshalFunc[0]
-		}
 		bodyBuf := bytebufferpool.Get()
 		defer bodyBuf.Free()
-		if err := writeObj(obj, bodyBuf, marshal); err != nil {
+		if err := writeObj(obj, bodyBuf, marshalFunc); err != nil {
 			return nil, err
 		}
-		setContent(bodyBuf, req, JsonContentType)
+		setContent(bodyBuf, req, contentType)
 		return do(cli, req)
 	}
 }
