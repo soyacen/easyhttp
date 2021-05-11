@@ -21,8 +21,9 @@ var (
 
 const (
 	kFormContentType = "application/x-www-form-urlencoded"
-	kJsonContentType = "application/json"
-	kXMLContentType  = "application/xml"
+	JsonContentType  = "application/json"
+	XMLContentType   = "application/xml"
+	kTextContentType = "text/plain"
 )
 
 func setContent(bodyBuf *bytebufferpool.ByteBuffer, req *easyhttp.Request, ct string) {
@@ -56,15 +57,19 @@ func writeObj(obj interface{}, bodyBuf *bytebufferpool.ByteBuffer, marshal func(
 	return nil
 }
 
+func Text(text string) easyhttp.Interceptor {
+	return func(cli *easyhttp.Client, req *easyhttp.Request, do easyhttp.Doer) (reply *easyhttp.Reply, err error) {
+		bodyBuf := bytebufferpool.Get()
+		bodyBuf.WriteString(text)
+		defer bodyBuf.Free()
+		setContent(bodyBuf, req, kTextContentType)
+		return do(cli, req)
+	}
+}
+
 func Form(form url.Values) easyhttp.Interceptor {
 	return func(cli *easyhttp.Client, req *easyhttp.Request, do easyhttp.Doer) (reply *easyhttp.Reply, err error) {
-		formData := make(url.Values)
-		for k, v := range form {
-			for _, iv := range v {
-				formData.Add(k, iv)
-			}
-		}
-		data := []byte(formData.Encode())
+		data := []byte(form.Encode())
 		bodyBuf := bytebufferpool.Get()
 		bodyBuf.Write(data)
 		defer bodyBuf.Free()
@@ -78,7 +83,7 @@ func JSON(obj interface{}, marshalFunc ...func(v interface{}) ([]byte, error)) e
 	if len(marshalFunc) > 0 {
 		marshal = marshalFunc[0]
 	}
-	return Object(obj, kJsonContentType, marshal)
+	return Object(obj, JsonContentType, marshal)
 }
 
 func XML(obj interface{}, marshalFunc ...func(v interface{}) ([]byte, error)) easyhttp.Interceptor {
@@ -86,7 +91,7 @@ func XML(obj interface{}, marshalFunc ...func(v interface{}) ([]byte, error)) ea
 	if len(marshalFunc) > 0 {
 		marshal = marshalFunc[0]
 	}
-	return Object(obj, kXMLContentType, marshal)
+	return Object(obj, XMLContentType, marshal)
 }
 
 func Object(obj interface{}, contentType string, marshalFunc func(v interface{}) ([]byte, error)) easyhttp.Interceptor {
