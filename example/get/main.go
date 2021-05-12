@@ -9,19 +9,6 @@ import (
 	"github.com/soyacen/easyhttp"
 )
 
-type Body struct {
-	Args struct {
-	} `json:"args"`
-	Headers struct {
-		AcceptEncoding string `json:"Accept-Encoding"`
-		Host           string `json:"Host"`
-		UserAgent      string `json:"User-Agent"`
-		XAmznTraceId   string `json:"X-Amzn-Trace-Id"`
-	} `json:"headers"`
-	Origin string `json:"origin"`
-	Url    string `json:"url"`
-}
-
 func main() {
 	client := easyhttp.NewClient(
 		easyhttp.WithChainInterceptor(
