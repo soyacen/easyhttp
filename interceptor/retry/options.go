@@ -99,14 +99,10 @@ func defaultOptions() *options {
 	return o
 }
 
-func (opt *options) apply(callOptions ...Option) *options {
-	if len(callOptions) == 0 {
-		return opt
-	}
+func (opt *options) apply(callOptions ...Option) {
 	for _, f := range callOptions {
 		f.applyFunc(opt)
 	}
-	return opt
 }
 
 func defaultRetryWithError(err error) bool {

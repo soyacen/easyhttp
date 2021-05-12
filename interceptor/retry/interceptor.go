@@ -1,13 +1,16 @@
 package easyhttpretry
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"strconv"
 	"time"
 
+	"github.com/soyacen/bytebufferpool"
 	"github.com/soyacen/easyhttp"
 )
 
@@ -21,10 +24,33 @@ func Retry(opts ...Option) easyhttp.Interceptor {
 		}
 		rawRequest := req.RawRequest()
 		rawCtx := rawRequest.Context()
+
+		var bodyReader *bytes.Reader
+		bodyBuf := bytebufferpool.Get()
+		defer bodyBuf.Free()
+		if rawRequest.Body != nil {
+			_, err := bodyBuf.ReadFrom(rawRequest.Body)
+			if err != nil {
+				return nil, err
+			}
+			bodyReader = bytes.NewReader(bodyBuf.Bytes())
+			rawRequest.Body = io.NopCloser(bodyReader)
+			rawRequest.ContentLength = int64(bodyBuf.Len())
+			buf := bodyBuf.Bytes()
+			rawRequest.GetBody = func() (io.ReadCloser, error) {
+				return io.NopCloser(bytes.NewReader(buf)), nil
+			}
+		}
+
 		for attempt := uint(0); attempt <= o.maxAttempts; attempt++ {
 			rawRequest := requestWithPerTimeout(rawRequest, o, attempt)
 			req.SetRawRequest(rawRequest)
-			fmt.Println("call ...")
+
+			if bodyReader != nil {
+				// Reset the body reader after the request since at this point it's already read
+				// Note that it's safe to ignore the error here since the 0,0 position is always valid
+				_, _ = bodyReader.Seek(0, 0)
+			}
 			reply, err = do(cli, req)
 			if attempt == o.maxAttempts {
 				return reply, err

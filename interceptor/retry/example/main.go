@@ -12,14 +12,15 @@ import (
 	easyhttpretry "github.com/soyacen/easyhttp/interceptor/retry"
 )
 
-func Example500() {
-	//func main() {
+//func Example500() {
+func main() {
 	client := easyhttp.NewClient()
 	reply, err := client.Get(
 		context.Background(),
 		"http://httpbin.org/status/500",
 		easyhttp.ChainInterceptor(
 			easyhttpretry.Retry(
+				easyhttpretry.WithBackoff(easyhttpretry.BackoffLinear(time.Second)),
 				easyhttpretry.WithTimeout(time.Second),
 				easyhttpretry.WithMaxAttempts(2),
 			)))
@@ -55,8 +56,8 @@ func Example400() {
 	fmt.Println(string(response))
 }
 
-//func Example200() {
-func main() {
+func Example200() {
+	//func main() {
 	client := easyhttp.NewClient()
 	timeout, _ := context.WithTimeout(context.Background(), time.Hour)
 	reply, err := client.Get(
@@ -64,6 +65,7 @@ func main() {
 		"http://httpbin.org/status/200",
 		easyhttp.ChainInterceptor(
 			easyhttpretry.Retry(
+				easyhttpretry.WithBackoff(easyhttpretry.BackoffLinear(time.Second)),
 				easyhttpretry.WithTimeout(time.Second),
 				easyhttpretry.WithMaxAttempts(2),
 			)))

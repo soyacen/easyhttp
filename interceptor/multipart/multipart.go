@@ -1,4 +1,4 @@
-package multipart
+package easyhttpmultipart
 
 import (
 	"fmt"
@@ -12,10 +12,9 @@ import (
 	"strings"
 
 	"github.com/soyacen/bytebufferpool"
+	"github.com/soyacen/easyhttp"
 	"github.com/soyacen/goutils/ioutils"
 	"github.com/soyacen/goutils/stringutils"
-
-	"github.com/soyacen/easyhttp"
 )
 
 type FormData struct {
