@@ -7,6 +7,7 @@ import (
 	"net/http/httputil"
 
 	"github.com/soyacen/easyhttp"
+
 	easyhttpauth "github.com/soyacen/easyhttp/interceptor/auth"
 )
 
@@ -47,7 +48,7 @@ func ExampleAPIKey() {
 	reply, err := client.Get(
 		context.Background(),
 		"http://httpbin.org/get",
-		easyhttp.ChainInterceptor(easyhttpauth.APIKey("token", "faketoken", easyhttpauth.APIKeyQuery)))
+		easyhttp.ChainInterceptor(easyhttpauth.APIKey("token", "faketoken", easyhttpauth.AddToQuery)))
 	if err != nil {
 		log.Fatalln(err)
 	}

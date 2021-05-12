@@ -20,8 +20,8 @@ import (
 type FormData struct {
 	// fieldName is form field name
 	fieldName string
-	// text is text form
-	text string
+	// data is text form
+	data string
 	// filepath file form,
 	filepath string
 	// fileContent is happy as long as you pass it a io.ReadCloser (which most file use anyways)
@@ -31,28 +31,32 @@ type FormData struct {
 	fileMime string
 }
 
-func NewFile(fieldName string, data string, filepath string, fileContent io.ReadCloser, fileMime string) *FormData {
+func NewFile(fieldName string, filepath string, fileContent io.ReadCloser, fileMime string) *FormData {
 	return &FormData{
 		fieldName:   fieldName,
-		text:        data,
 		filepath:    filepath,
 		fileContent: fileContent,
 		fileMime:    fileMime,
 	}
 }
 
+func NewData(fieldName string, data string) *FormData {
+	return &FormData{
+		fieldName: fieldName,
+		data:      data,
+	}
+}
+
 func Multipart(formData ...*FormData) easyhttp.Interceptor {
 	return func(cli *easyhttp.Client, req *easyhttp.Request, do easyhttp.Doer) (reply *easyhttp.Reply, err error) {
 		for _, file := range formData {
-			// ignore data not empty
-			if stringutils.IsNotEmpty(file.text) {
+			if stringutils.IsNotEmpty(file.data) {
 				continue
 			}
-			// ignore fileContent not nil
 			if file.fileContent != nil {
 				continue
 			}
-			// open file
+			// open file by filepath
 			if stringutils.IsNotBlank(file.filepath) {
 				fd, err := os.Open(file.filepath)
 				if err != nil {
@@ -66,18 +70,18 @@ func Multipart(formData ...*FormData) easyhttp.Interceptor {
 
 		multipartWriter := multipart.NewWriter(requestBody)
 		defer ioutils.CloseThrowError(multipartWriter, &err)
+
 		for i, f := range formData {
 			fieldName := f.fieldName
-			// generate default field name
-			if stringutils.IsBlank(fieldName) {
-				if len(formData) > 1 {
-					fieldName = strings.Join([]string{"file", strconv.Itoa(i + 1)}, "")
-				} else {
-					fieldName = "file"
-				}
-			}
-
 			if f.fileContent != nil {
+				// generate default field name
+				if stringutils.IsBlank(fieldName) {
+					if len(formData) > 1 {
+						fieldName = strings.Join([]string{"file", strconv.Itoa(i + 1)}, "")
+					} else {
+						fieldName = "file"
+					}
+				}
 				// write file
 				err = writeFile(fieldName, f, multipartWriter)
 				if err != nil {
@@ -85,7 +89,7 @@ func Multipart(formData ...*FormData) easyhttp.Interceptor {
 				}
 			} else {
 				// write data
-				err = multipartWriter.WriteField(fieldName, f.text)
+				err = multipartWriter.WriteField(fieldName, f.data)
 				if err != nil {
 					return nil, err
 				}

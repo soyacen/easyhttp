@@ -57,6 +57,16 @@ func writeObj(obj interface{}, bodyBuf *bytebufferpool.ByteBuffer, marshal func(
 	return nil
 }
 
+func Reader(body io.Reader, contentType string) easyhttp.Interceptor {
+	return func(cli *easyhttp.Client, req *easyhttp.Request, do easyhttp.Doer) (reply *easyhttp.Reply, err error) {
+		bodyBuf := bytebufferpool.Get()
+		bodyBuf.ReadFrom(body)
+		defer bodyBuf.Free()
+		setContent(bodyBuf, req, contentType)
+		return do(cli, req)
+	}
+}
+
 func Text(text string) easyhttp.Interceptor {
 	return func(cli *easyhttp.Client, req *easyhttp.Request, do easyhttp.Doer) (reply *easyhttp.Reply, err error) {
 		bodyBuf := bytebufferpool.Get()

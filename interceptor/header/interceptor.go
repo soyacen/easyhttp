@@ -6,7 +6,7 @@ import (
 	"github.com/soyacen/easyhttp"
 )
 
-func SetHeader(key, value string) easyhttp.Interceptor {
+func Set(key, value string) easyhttp.Interceptor {
 	return func(cli *easyhttp.Client, req *easyhttp.Request, do easyhttp.Doer) (reply *easyhttp.Reply, err error) {
 		rawRequest := req.RawRequest()
 		if rawRequest.Header == nil {
@@ -17,7 +17,7 @@ func SetHeader(key, value string) easyhttp.Interceptor {
 	}
 }
 
-func SetHeaders(headers map[string]string) easyhttp.Interceptor {
+func SetMap(headers map[string]string) easyhttp.Interceptor {
 	return func(cli *easyhttp.Client, req *easyhttp.Request, do easyhttp.Doer) (reply *easyhttp.Reply, err error) {
 		rawRequest := req.RawRequest()
 		if rawRequest.Header == nil {
@@ -30,7 +30,7 @@ func SetHeaders(headers map[string]string) easyhttp.Interceptor {
 	}
 }
 
-func AddHeaders(key string, values ...string) easyhttp.Interceptor {
+func Add(key string, values ...string) easyhttp.Interceptor {
 	return func(cli *easyhttp.Client, req *easyhttp.Request, do easyhttp.Doer) (reply *easyhttp.Reply, err error) {
 		rawRequest := req.RawRequest()
 		if rawRequest.Header == nil {
@@ -38,6 +38,17 @@ func AddHeaders(key string, values ...string) easyhttp.Interceptor {
 		}
 		for _, value := range values {
 			rawRequest.Header.Add(key, value)
+		}
+		return do(cli, req)
+	}
+}
+
+// Del deletes the header fields associated with key.
+func Del(key string) easyhttp.Interceptor {
+	return func(cli *easyhttp.Client, req *easyhttp.Request, do easyhttp.Doer) (reply *easyhttp.Reply, err error) {
+		rawRequest := req.RawRequest()
+		if rawRequest.Header != nil {
+			rawRequest.Header.Del(key)
 		}
 		return do(cli, req)
 	}

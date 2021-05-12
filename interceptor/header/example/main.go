@@ -12,11 +12,11 @@ import (
 )
 
 func main() {
-	client := easyhttp.NewClient(easyhttp.WithChainInterceptor(easyhttpheader.SetHeader("Authorization", "abcdefghijklmnopqrstuvwxyz")))
+	client := easyhttp.NewClient(easyhttp.WithChainInterceptor(easyhttpheader.Set("Authorization", "abcdefghijklmnopqrstuvwxyz")))
 	reply1, err := client.Get(
 		context.Background(),
 		"http://httpbin.org/get",
-		easyhttp.ChainInterceptor(easyhttpheader.SetHeader("X-Forward-For", "127.93.4.5")))
+		easyhttp.ChainInterceptor(easyhttpheader.Set("X-Forward-For", "127.93.4.5")))
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -29,7 +29,7 @@ func main() {
 	reply2, err := client.Post(
 		context.Background(),
 		"http://httpbin.org/post",
-		easyhttp.ChainInterceptor(easyhttpheader.SetHeader("X-Trace-ID", "1id9dj1jdo0")))
+		easyhttp.ChainInterceptor(easyhttpheader.Set("X-Trace-ID", "1id9dj1jdo0")))
 	if err != nil {
 		log.Fatalln(err)
 	}
