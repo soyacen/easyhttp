@@ -8,4 +8,3 @@ require (
 	golang.org/x/net v0.0.0-20210508051633-16afe75a6701 // indirect
 )
 
-//replace github.com/soyacen/easyhttp v0.0.0-20210507012034-3769b0914be4 => ../../

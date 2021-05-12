@@ -28,7 +28,7 @@ func Logger(logFunc func(fields *Fields)) easyhttp.Interceptor {
 			System:    "http.client",
 			StartTime: startTime,
 		}
-		if d, ok := req.Context().Deadline(); ok {
+		if d, ok := req.RawRequest().Context().Deadline(); ok {
 			fields.Deadline = d
 		}
 		rawRequest := req.RawRequest()

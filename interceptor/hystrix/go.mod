@@ -17,5 +17,3 @@ require (
 	golang.org/x/net v0.0.0-20210510120150-4163338589ed // indirect
 	golang.org/x/sys v0.0.0-20210511113859-b0526f3d8744 // indirect
 )
-
-//replace github.com/soyacen/easyhttp v0.0.0-20210507012034-3769b0914be4 => ../../

@@ -1,4 +1,4 @@
-module github.com/soyacen/easyhttp/interceptor/compression
+module github.com/soyacen/easyhttp/interceptor/tls
 
 go 1.16
 
