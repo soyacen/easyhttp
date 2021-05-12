@@ -21,7 +21,7 @@ type Fields struct {
 	StatusCode     int
 }
 
-func Logger(logFunc func(fields *Fields)) easyhttp.Interceptor {
+func Logger(logFunc func(fields *Fields, reply *easyhttp.Reply)) easyhttp.Interceptor {
 	return func(cli *easyhttp.Client, req *easyhttp.Request, do easyhttp.Doer) (reply *easyhttp.Reply, err error) {
 		startTime := time.Now()
 		fields := &Fields{
@@ -41,7 +41,7 @@ func Logger(logFunc func(fields *Fields)) easyhttp.Interceptor {
 		fields.StatusCode = rawResponse.StatusCode
 		fields.ResponseHeader = rawResponse.Header.Clone()
 		fields.Error = err
-		logFunc(fields)
+		logFunc(fields, reply)
 		return r, err
 	}
 }

@@ -7,6 +7,7 @@ import (
 	"net/http/httputil"
 
 	"github.com/soyacen/easyhttp"
+
 	easyhttplogging "github.com/soyacen/easyhttp/interceptor/logging"
 )
 
@@ -15,7 +16,7 @@ func main() {
 	reply, err := client.Get(
 		context.Background(),
 		"http://httpbin.org/get",
-		easyhttp.ChainInterceptor(easyhttplogging.Logger(func(fields *easyhttplogging.Fields) {
+		easyhttp.ChainInterceptor(easyhttplogging.Logger(func(fields *easyhttplogging.Fields, reply *easyhttp.Reply) {
 			log.Println(fields)
 		})))
 	if err != nil {
