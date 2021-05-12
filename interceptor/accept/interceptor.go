@@ -12,8 +12,8 @@ import (
 	"strings"
 
 	"github.com/soyacen/bytebufferpool"
-
 	"github.com/soyacen/easyhttp"
+	"github.com/soyacen/goutils/ioutils"
 )
 
 var (
@@ -82,29 +82,22 @@ func Object(obj interface{}, contentType string, unmarshalFunc func(data []byte,
 		if rawResponse.ContentLength == 0 {
 			return reply, err
 		}
-		body := rawResponse.Body
-		if body != nil {
-			defer func(Body io.ReadCloser) {
-				e := Body.Close()
-				if e != nil {
-					err = e
-				}
-			}(body)
+
+		if rawResponse.Body != nil {
+			defer ioutils.CloseThrowError(rawResponse.Body, &err)
 		}
 
+		var body io.Reader
+		body = rawResponse.Body
 		cek := rawResponse.Header.Get(kContentEncodingKey)
 		if strings.EqualFold(cek, "gzip") {
-			if _, ok := body.(*gzip.Reader); !ok {
-				body, err = gzip.NewReader(body)
+			if _, ok := rawResponse.Body.(*gzip.Reader); !ok {
+				gzipReader, err := gzip.NewReader(rawResponse.Body)
 				if err != nil {
 					return reply, err
 				}
-				defer func(Body io.ReadCloser) {
-					e := Body.Close()
-					if e != nil {
-						err = e
-					}
-				}(body)
+				defer ioutils.CloseThrowError(gzipReader, &err)
+				body = gzipReader
 			}
 		}
 

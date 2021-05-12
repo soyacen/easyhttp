@@ -3,8 +3,6 @@ github.com/opentracing-contrib/go-stdlib v1.0.0/go.mod h1:qtI1ogk+2JhVPIXVc6q+NH
 github.com/opentracing/opentracing-go v1.1.0/go.mod h1:UkNAQd3GIcIGf0SeVgPpRdFStlNbqXla1AfSYxPUl2o=
 github.com/opentracing/opentracing-go v1.2.0/go.mod h1:GxEUsuufX4nBwe+T+Wl9TAgYrxe9dPLANfrWvHYVTgc=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
-github.com/soyacen/bytebufferpool v1.0.1 h1:Z30UJ7EmZ+v9ZYfvdjUHgskjDUGIv/fWGxpun+zrJds=
-github.com/soyacen/bytebufferpool v1.0.1/go.mod h1:l4QZeNZx9huiTwcGz6OiWktQmgI0PvYb5d/ZtVcwTCc=
 github.com/soyacen/easyhttp v0.0.0-20210507012034-3769b0914be4 h1:TsWkauZZeHoxFSWCCeFqessZ/SxxJss8x1XukxxDAFU=
 github.com/soyacen/easyhttp v0.0.0-20210507012034-3769b0914be4/go.mod h1:h0wBQThwVOLm3DzZ7Alfe8Naga/7RcDi/nFxq70WeaI=
 github.com/soyacen/goutils/ioutils v0.0.0-20210511094924-53f8d21e0b58 h1:ik3rod7R6JHEtRoJc3hcT8ixXUGa4xG+n8nhfGhnbSU=

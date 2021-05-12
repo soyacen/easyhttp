@@ -1,13 +1,40 @@
 package easyhttpretry
 
 import (
+	"context"
+	"crypto/x509"
+	"errors"
 	"net/http"
+	"net/url"
+	"strings"
 	"time"
 )
 
 var (
-	DefaultRetriableStatusCode = []int{http.StatusRequestTimeout, http.StatusGatewayTimeout, http.StatusServiceUnavailable}
+	defaultRetriableStatusCode = []int{
+		0, // means did not get a response. need to retry
+		http.StatusRequestTimeout,
+		http.StatusConflict,
+		http.StatusLocked,
+		http.StatusTooManyRequests,
+		http.StatusInternalServerError,
+		http.StatusBadGateway,
+		http.StatusServiceUnavailable,
+		http.StatusGatewayTimeout,
+		http.StatusInsufficientStorage,
+	}
+
+	defaultRetriableError = []error{
+		context.DeadlineExceeded,
+		context.Canceled,
+	}
 )
+
+// RetryWithError whether the request should be retried based on error
+type RetryWithError func(err error) bool
+
+// RetryWithStatusCode  whether the request should be retried based on statusCode
+type RetryWithStatusCode func(statusCode int) bool
 
 // Disable disables the retry behaviour on this call, or this interceptor.
 //
@@ -30,26 +57,28 @@ func WithBackoff(bf BackoffFunc) Option {
 	}}
 }
 
-// WithStatusCodes sets which statusCodes should be retried.
-func WithStatusCodes(codes ...int) Option {
+// WithRetryPolicy sets retry policy which decides if a request should be retried.
+func WithRetryPolicy(policyByError RetryWithError, policyByStatusCode RetryWithStatusCode) Option {
 	return Option{applyFunc: func(o *options) {
-		o.statusCodes = codes
+		o.shouldRetryWithError = policyByError
+		o.shouldRetryWithStatusCode = policyByStatusCode
 	}}
 }
 
-// WithPerRetryTimeout sets the timeout of each HTTP request
-func WithPerRetryTimeout(timeout time.Duration) Option {
+// WithTimeout sets the timeout of each HTTP request
+func WithTimeout(timeout time.Duration) Option {
 	return Option{applyFunc: func(o *options) {
-		o.perCallTimeout = timeout
+		o.timeout = timeout
 	}}
 }
 
 type options struct {
-	maxAttempts    uint
-	perCallTimeout time.Duration
-	includeHeader  bool
-	statusCodes    []int
-	backoffFunc    BackoffFunc
+	maxAttempts               uint
+	timeout                   time.Duration
+	includeHeader             bool
+	backoffFunc               BackoffFunc
+	shouldRetryWithError      RetryWithError
+	shouldRetryWithStatusCode RetryWithStatusCode
 }
 
 type Option struct {
@@ -58,12 +87,13 @@ type Option struct {
 
 func defaultOptions() *options {
 	o := &options{
-		maxAttempts:    0,
-		perCallTimeout: 0,
-		includeHeader:  true,
-		statusCodes:    DefaultRetriableStatusCode,
+		maxAttempts:               0,
+		timeout:                   0,
+		includeHeader:             true,
+		shouldRetryWithError:      defaultRetryWithError,
+		shouldRetryWithStatusCode: defaultRetryWithStatusCode,
 		backoffFunc: BackoffFunc(func(attempt uint) time.Duration {
-			return BackoffLinearWithJitter(50*time.Millisecond, 0.10)(attempt)
+			return BackoffExponentialWithJitter(50*time.Millisecond, 0.10)(attempt)
 		}),
 	}
 	return o
@@ -77,4 +107,49 @@ func (opt *options) apply(callOptions ...Option) *options {
 		f.applyFunc(opt)
 	}
 	return opt
+}
+
+func defaultRetryWithError(err error) bool {
+	// check if error is of type temporary
+	t, ok := err.(interface{ Temporary() bool })
+	if ok && t.Temporary() {
+		return true
+	}
+
+	// we cannot know all errors, so we filter errors that should NOT be retried
+	switch e := err.(type) {
+	case *url.Error:
+		switch {
+		case
+			e.Op == "parse",
+			strings.Contains(e.Err.Error(), "stopped after"),
+			strings.Contains(e.Error(), "unsupported protocol scheme"),
+			strings.Contains(e.Error(), "no Host in request URL"):
+			return false
+		}
+		// check inner error of url.Error
+		switch e.Err.(type) {
+		case // this errors will not likely change when retrying
+			x509.UnknownAuthorityError,
+			x509.CertificateInvalidError,
+			x509.ConstraintViolationError:
+			return false
+		}
+	}
+
+	for _, e := range defaultRetriableError {
+		if errors.Is(err, e) {
+			return true
+		}
+	}
+	return false
+}
+
+func defaultRetryWithStatusCode(statusCode int) bool {
+	for _, code := range defaultRetriableStatusCode {
+		if code == statusCode {
+			return true
+		}
+	}
+	return false
 }

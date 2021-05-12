@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"net/http"
 	"net/http/httputil"
 	"time"
 
@@ -13,18 +12,17 @@ import (
 	easyhttpretry "github.com/soyacen/easyhttp/interceptor/retry"
 )
 
-//func Example500() {
-func main() {
+func Example500() {
+	//func main() {
 	client := easyhttp.NewClient()
-	timeout, _ := context.WithTimeout(context.Background(), time.Hour)
 	reply, err := client.Get(
-		timeout,
+		context.Background(),
 		"http://httpbin.org/status/500",
 		easyhttp.ChainInterceptor(
 			easyhttpretry.Retry(
-				easyhttpretry.WithPerRetryTimeout(time.Second),
+				easyhttpretry.WithTimeout(time.Second),
 				easyhttpretry.WithMaxAttempts(2),
-				easyhttpretry.WithStatusCodes(http.StatusInternalServerError))))
+			)))
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -44,9 +42,9 @@ func Example400() {
 		"http://httpbin.org/status/400",
 		easyhttp.ChainInterceptor(
 			easyhttpretry.Retry(
-				easyhttpretry.WithPerRetryTimeout(time.Second),
+				easyhttpretry.WithTimeout(time.Second),
 				easyhttpretry.WithMaxAttempts(2),
-				easyhttpretry.WithStatusCodes(http.StatusInternalServerError))))
+			)))
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -57,7 +55,8 @@ func Example400() {
 	fmt.Println(string(response))
 }
 
-func Example200() {
+//func Example200() {
+func main() {
 	client := easyhttp.NewClient()
 	timeout, _ := context.WithTimeout(context.Background(), time.Hour)
 	reply, err := client.Get(
@@ -65,9 +64,9 @@ func Example200() {
 		"http://httpbin.org/status/200",
 		easyhttp.ChainInterceptor(
 			easyhttpretry.Retry(
-				easyhttpretry.WithPerRetryTimeout(time.Second),
+				easyhttpretry.WithTimeout(time.Second),
 				easyhttpretry.WithMaxAttempts(2),
-				easyhttpretry.WithStatusCodes(http.StatusInternalServerError))))
+			)))
 	if err != nil {
 		log.Fatalln(err)
 	}

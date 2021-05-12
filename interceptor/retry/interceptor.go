@@ -26,57 +26,43 @@ func Retry(opts ...Option) easyhttp.Interceptor {
 			req.SetRawRequest(rawRequest)
 			fmt.Println("call ...")
 			reply, err = do(cli, req)
-
-			// if check error is not nil
-			if err != nil {
-				// if raw context is deadline or canceled, just return
-				if rawCtx.Err() != nil {
-					return reply, err
-				}
-				//  when err is context.DeadlineExceeded or context.Canceled, retry again
-				if isDeadlineOrCanceled(err) {
-					if e := waitRetryBackoff(attempt, rawCtx, o); e != nil {
-						return reply, err
-					}
-					continue
-				} else {
-					// other error, just return
-					return reply, err
-				}
-			}
-
-			// reply must be intercept, just return
-			if reply == nil || reply.RawResponse() == nil {
+			if attempt == o.maxAttempts {
 				return reply, err
 			}
-
-			// check status code
-			if checkStatusCode(reply.RawResponse().StatusCode, o.statusCodes) {
+			if err != nil {
+				if !o.shouldRetryWithError(err) {
+					return reply, err
+				}
 				// if raw context is deadline or canceled, just return
 				if rawCtx.Err() != nil {
-					return
+					return reply, err
 				}
-				// if code is need retry,continue
 				if e := waitRetryBackoff(attempt, rawCtx, o); e != nil {
 					return reply, err
 				}
 				continue
 			}
+			// reply or raw response is nil, must be intercept, just return
+			if reply == nil || reply.RawResponse() == nil {
+				return reply, err
+			}
 
-			// other, return
-			return reply, err
+			// check status code
+			if !o.shouldRetryWithStatusCode(reply.RawResponse().StatusCode) {
+				return reply, err
+			}
+			// if raw context is deadline or canceled, just return
+			if rawCtx.Err() != nil {
+				return reply, err
+			}
+			// if code is need retry,continue
+			if e := waitRetryBackoff(attempt, rawCtx, o); e != nil {
+				return reply, err
+			}
+			continue
 		}
-		return
+		return reply, err
 	}
-}
-
-func checkStatusCode(statusCode int, codes []int) bool {
-	for _, code := range codes {
-		if code == statusCode {
-			return true
-		}
-	}
-	return false
 }
 
 func waitRetryBackoff(attempt uint, parentCtx context.Context, callOpts *options) error {
@@ -96,8 +82,8 @@ func waitRetryBackoff(attempt uint, parentCtx context.Context, callOpts *options
 
 func requestWithPerTimeout(rawRequest *http.Request, callOpts *options, attempt uint) *http.Request {
 	ctx := rawRequest.Context()
-	if callOpts.perCallTimeout != 0 {
-		ctx, _ = context.WithTimeout(ctx, callOpts.perCallTimeout)
+	if callOpts.timeout != 0 {
+		ctx, _ = context.WithTimeout(ctx, callOpts.timeout)
 	}
 	if attempt > 0 && callOpts.includeHeader {
 		if rawRequest.Header == nil {

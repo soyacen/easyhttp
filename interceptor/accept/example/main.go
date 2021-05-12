@@ -7,7 +7,7 @@ import (
 
 	"github.com/soyacen/easyhttp"
 
-	easyhttpaccept "github.com/soyacen/easyhttp/interceptor/body"
+	easyhttpaccept "github.com/soyacen/easyhttp/interceptor/accpet"
 )
 
 func main() {
