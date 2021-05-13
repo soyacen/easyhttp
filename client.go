@@ -22,8 +22,8 @@ type clientOptions struct {
 	tlsConfig           *tls.Config
 	tlsHandshakeTimeout *time.Duration
 	proxy               func(req *http.Request) (*url.URL, error)
-	compression         *bool
-	keepAlives          *bool
+	disableCompression  bool
+	disableKeepAlives   bool
 	maxIdleConns        *int
 	maxIdleConnsPerHost *int
 	maxConnsPerHost     *int
@@ -60,12 +60,8 @@ func (o *clientOptions) apply(opts ...ClientOption) {
 		if o.proxy != nil {
 			copy.Proxy = o.proxy
 		}
-		if o.compression != nil {
-			copy.DisableCompression = !*o.compression
-		}
-		if o.keepAlives != nil {
-			copy.DisableKeepAlives = !*o.keepAlives
-		}
+		copy.DisableCompression = o.disableCompression
+		copy.DisableKeepAlives = o.disableKeepAlives
 		if o.maxIdleConns != nil {
 			copy.MaxIdleConns = *o.maxIdleConns
 		}
@@ -150,15 +146,15 @@ func WithProxy(servers map[string]string) ClientOption {
 	}
 }
 
-func WithCompression(enabled bool) ClientOption {
+func WithDisableCompression() ClientOption {
 	return func(o *clientOptions) {
-		o.compression = &enabled
+		o.disableCompression = true
 	}
 }
 
-func WithKeepAlives(enabled bool) ClientOption {
+func WithDisableKeepAlives() ClientOption {
 	return func(o *clientOptions) {
-		o.keepAlives = &enabled
+		o.disableKeepAlives = true
 	}
 }
 
