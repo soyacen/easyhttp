@@ -13,6 +13,7 @@ type Fields struct {
 	URL            string
 	StartTime      time.Time
 	Deadline       time.Time
+	Duration       time.Duration
 	RequestHeader  http.Header
 	Error          error
 	requestBody    []byte
@@ -37,10 +38,12 @@ func Logger(logFunc func(fields *Fields, reply *easyhttp.Reply)) easyhttp.Interc
 		fields.RequestHeader = rawRequest.Header.Clone()
 		r, err := do(cli, req)
 		rawResponse := r.RawResponse()
+		fields.Duration = time.Since(startTime)
 		fields.Status = rawResponse.Status
 		fields.StatusCode = rawResponse.StatusCode
 		fields.ResponseHeader = rawResponse.Header.Clone()
 		fields.Error = err
+
 		logFunc(fields, reply)
 		return r, err
 	}
