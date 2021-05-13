@@ -2,8 +2,10 @@ package easyhttp
 
 import (
 	"context"
+	"crypto/tls"
 	"net/http"
 	"net/http/cookiejar"
+	"net/url"
 	"time"
 
 	"golang.org/x/net/publicsuffix"
@@ -13,20 +15,31 @@ type clientOptions struct {
 	interceptors []Interceptor
 
 	//  http.Client field
-	transport     http.RoundTripper
-	checkRedirect func(req *http.Request, via []*http.Request) error
-	jar           http.CookieJar
-	timeout       time.Duration
+	transport           http.RoundTripper
+	checkRedirect       func(req *http.Request, via []*http.Request) error
+	jar                 http.CookieJar
+	timeout             *time.Duration
+	tlsConfig           *tls.Config
+	tlsHandshakeTimeout *time.Duration
+	proxy               func(req *http.Request) (*url.URL, error)
+	compression         *bool
+	keepAlives          *bool
+	maxIdleConns        *int
+	maxIdleConnsPerHost *int
+	maxConnsPerHost     *int
+	idleConnTimeout     *time.Duration
+	writeBufferSize     *int
+	readBufferSize      *int
 }
 
 func defaultClientOptions() *clientOptions {
 	var defaultCookieJar, _ = cookiejar.New(&cookiejar.Options{PublicSuffixList: publicsuffix.List})
 	o := &clientOptions{
 		interceptors:  make([]Interceptor, 0),
-		transport:     http.DefaultTransport,
+		transport:     nil,
 		checkRedirect: nil,
 		jar:           defaultCookieJar,
-		timeout:       0,
+		timeout:       new(time.Duration),
 	}
 	return o
 }
@@ -34,6 +47,44 @@ func defaultClientOptions() *clientOptions {
 func (o *clientOptions) apply(opts ...ClientOption) {
 	for _, opt := range opts {
 		opt(o)
+	}
+	if o.transport == nil {
+		transport := http.DefaultTransport.(*http.Transport)
+		copy := *transport
+		if o.tlsConfig != nil {
+			copy.TLSClientConfig = o.tlsConfig
+		}
+		if o.tlsHandshakeTimeout != nil {
+			copy.TLSHandshakeTimeout = *o.tlsHandshakeTimeout
+		}
+		if o.proxy != nil {
+			copy.Proxy = o.proxy
+		}
+		if o.compression != nil {
+			copy.DisableCompression = !*o.compression
+		}
+		if o.keepAlives != nil {
+			copy.DisableKeepAlives = !*o.keepAlives
+		}
+		if o.maxIdleConns != nil {
+			copy.MaxIdleConns = *o.maxIdleConns
+		}
+		if o.maxIdleConnsPerHost != nil {
+			copy.MaxIdleConnsPerHost = *o.maxIdleConnsPerHost
+		}
+		if o.maxConnsPerHost != nil {
+			copy.MaxConnsPerHost = *o.maxConnsPerHost
+		}
+		if o.idleConnTimeout != nil {
+			copy.IdleConnTimeout = *o.idleConnTimeout
+		}
+		if o.writeBufferSize != nil {
+			copy.WriteBufferSize = *o.writeBufferSize
+		}
+		if o.readBufferSize != nil {
+			copy.ReadBufferSize = *o.readBufferSize
+		}
+		o.transport = &copy
 	}
 }
 
@@ -59,7 +110,7 @@ func WithCookieJar(jar http.CookieJar) ClientOption {
 
 func WithTimeout(timeout time.Duration) ClientOption {
 	return func(o *clientOptions) {
-		o.timeout = timeout
+		o.timeout = &timeout
 	}
 }
 
@@ -73,6 +124,77 @@ func WithCheckRedirect(policies ...func(req *http.Request, via []*http.Request) 
 			}
 			return nil
 		}
+	}
+}
+
+func TLS(config *tls.Config) ClientOption {
+	return func(o *clientOptions) {
+		o.tlsConfig = config
+	}
+}
+
+func TLSHandshakeTimeout(timeout time.Duration) ClientOption {
+	return func(o *clientOptions) {
+		o.tlsHandshakeTimeout = &timeout
+	}
+}
+
+func Proxy(servers map[string]string) ClientOption {
+	return func(o *clientOptions) {
+		o.proxy = func(req *http.Request) (*url.URL, error) {
+			if value, ok := servers[req.URL.Scheme]; ok {
+				return url.Parse(value)
+			}
+			return http.ProxyFromEnvironment(req)
+		}
+	}
+}
+
+func Compression(enabled bool) ClientOption {
+	return func(o *clientOptions) {
+		o.compression = &enabled
+	}
+}
+
+func KeepAlives(enabled bool) ClientOption {
+	return func(o *clientOptions) {
+		o.keepAlives = &enabled
+	}
+}
+
+func MaxIdleConns(number int) ClientOption {
+	return func(o *clientOptions) {
+		o.maxIdleConns = &number
+	}
+}
+
+func MaxIdleConnsPerHost(number int) ClientOption {
+	return func(o *clientOptions) {
+		o.maxIdleConnsPerHost = &number
+	}
+}
+
+func MaxConnsPerHost(number int) ClientOption {
+	return func(o *clientOptions) {
+		o.maxConnsPerHost = &number
+	}
+}
+
+func IdleConnTimeout(timeout time.Duration) ClientOption {
+	return func(o *clientOptions) {
+		o.idleConnTimeout = &timeout
+	}
+}
+
+func WriteBufferSize(size int) ClientOption {
+	return func(o *clientOptions) {
+		o.writeBufferSize = &size
+	}
+}
+
+func ReadBufferSize(size int) ClientOption {
+	return func(o *clientOptions) {
+		o.readBufferSize = &size
 	}
 }
 
@@ -92,14 +214,13 @@ func (cli *Client) RawClient() *http.Client {
 func NewClient(opts ...ClientOption) *Client {
 	options := defaultClientOptions()
 	options.apply(opts...)
-
 	return &Client{
 		opts: options,
 		rawClient: &http.Client{
 			Transport:     options.transport,
 			CheckRedirect: options.checkRedirect,
 			Jar:           options.jar,
-			Timeout:       options.timeout,
+			Timeout:       *options.timeout,
 		}}
 }
 

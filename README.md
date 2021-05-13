@@ -21,8 +21,6 @@ go get -u github.com/soyacen/easyhttp
 - [accept](https://github.com/soyacen/easyhttp/tree/main/interceptor/accept) 
 - [body](https://github.com/soyacen/easyhttp/tree/main/interceptor/body)
 - [auth](https://github.com/soyacen/easyhttp/tree/main/interceptor/auth)
-- [client](https://github.com/soyacen/easyhttp/tree/main/interceptor/client)
-- [compression](https://github.com/soyacen/easyhttp/tree/main/interceptor/compression)
 - [cookie](https://github.com/soyacen/easyhttp/tree/main/interceptor/cookie)
 - [download](https://github.com/soyacen/easyhttp/tree/main/interceptor/download)
 - [header](https://github.com/soyacen/easyhttp/tree/main/interceptor/header)
@@ -31,9 +29,7 @@ go get -u github.com/soyacen/easyhttp
 - [multipart](https://github.com/soyacen/easyhttp/tree/main/interceptor/multipart)
 - [opentracing](https://github.com/soyacen/easyhttp/tree/main/interceptor/opentracing) 
 - [proxy](https://github.com/soyacen/easyhttp/tree/main/interceptor/proxy) 
-- [query](https://github.com/soyacen/easyhttp/tree/main/interceptor/query) 
 - [retry](https://github.com/soyacen/easyhttp/tree/main/interceptor/retry) 
-- [tls](https://github.com/soyacen/easyhttp/tree/main/interceptor/tls) 
 - [url](https://github.com/soyacen/easyhttp/tree/main/interceptor/url) 
 
 

@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	filepathutils "path/filepath"
 	"strings"
 
 	"github.com/soyacen/easyhttp"
@@ -17,8 +18,18 @@ var (
 	kContentEncodingKey = http.CanonicalHeaderKey("Content-Encoding")
 )
 
-func Download(filename string) easyhttp.Interceptor {
+func Download(filepath string) easyhttp.Interceptor {
 	return func(cli *easyhttp.Client, req *easyhttp.Request, do easyhttp.Doer) (reply *easyhttp.Reply, err error) {
+		err = createDirectory(filepathutils.Dir(filepath))
+		if err != nil {
+			return nil, err
+		}
+		if _, err = os.Stat(filepath); err != nil {
+			if os.IsExist(err) {
+				return
+			}
+		}
+
 		reply, err = do(cli, req)
 		if err != nil {
 			return reply, err
@@ -34,7 +45,7 @@ func Download(filename string) easyhttp.Interceptor {
 			defer ioutils.CloseThrowError(rawResponse.Body, &err)
 		}
 
-		fd, err := os.Create(filename)
+		fd, err := os.Create(filepath)
 		if err != nil {
 			return reply, err
 		}
@@ -60,4 +71,15 @@ func Download(filename string) easyhttp.Interceptor {
 		}
 		return reply, err
 	}
+}
+
+func createDirectory(dir string) (err error) {
+	if _, err = os.Stat(dir); err != nil {
+		if os.IsNotExist(err) {
+			if err = os.MkdirAll(dir, 0755); err != nil {
+				return
+			}
+		}
+	}
+	return
 }

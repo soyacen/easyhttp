@@ -11,11 +11,15 @@ github.com/soyacen/easyhttp v0.0.0-20210507012034-3769b0914be4 h1:TsWkauZZeHoxFS
 github.com/soyacen/easyhttp v0.0.0-20210507012034-3769b0914be4/go.mod h1:h0wBQThwVOLm3DzZ7Alfe8Naga/7RcDi/nFxq70WeaI=
 github.com/soyacen/easyhttp v0.0.0-20210508060915-cb493a3af45a h1:2jbNYKf1Zi8CjJOKVYwpkSw7mO0Zb1sjEDQjv5F5Iq0=
 github.com/soyacen/easyhttp v0.0.0-20210508060915-cb493a3af45a/go.mod h1:7nV40Dg314O37PEiq0GBFgND/L+3wcXd/JlbQDP+3Vk=
+github.com/soyacen/easyhttp v0.0.0-20210512093457-04f0ec824c90 h1:NtuBg2uuCPL7Yn3NxsN6nn9ZlpgijDL4neHWo/JNYdU=
+github.com/soyacen/easyhttp v0.0.0-20210512093457-04f0ec824c90/go.mod h1:7nV40Dg314O37PEiq0GBFgND/L+3wcXd/JlbQDP+3Vk=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.3.0 h1:TivCn/peBQ7UY8ooIcPgZFpTNSz0Q2U6UrFlUfqbe0Q=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
 golang.org/x/net v0.0.0-20210427231257-85d9c07bbe3a h1:njMmldwFTyDLqonHMagNXKBWptTBeDZOdblgaDsNEGQ=
 golang.org/x/net v0.0.0-20210427231257-85d9c07bbe3a/go.mod h1:OJAsFXCWl8Ukc7SiCT/9KSuxbyM7479/AVlXFRxuMCk=
+golang.org/x/net v0.0.0-20210510120150-4163338589ed h1:p9UgmWI9wKpfYmgaV/IZKGdXc5qEK45tDwwwDyjS26I=
+golang.org/x/net v0.0.0-20210510120150-4163338589ed/go.mod h1:9nx3DQGgdP8bBQD5qxJ1jj9UTztislL4KSBs9R2vV5Y=
 golang.org/x/sys v0.0.0-20201119102817-f84b799fce68/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20210423082822-04245dca01da/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/term v0.0.0-20201126162022-7de9c90e9dd1/go.mod h1:bj7SfCRtBDWHUb9snDiAeCFNEtKQo2Wmx5Cou7ajbmo=

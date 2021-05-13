@@ -1,6 +1,7 @@
 package easyhttpurl
 
 import (
+	"net/url"
 	"strings"
 
 	"github.com/soyacen/easyhttp"
@@ -31,8 +32,8 @@ func Host(host string) easyhttp.Interceptor {
 	}
 }
 
-// Param replaces one or multiple path param expressions by the given value
-func Param(key, value string) easyhttp.Interceptor {
+// PathParam replaces one or multiple path param expressions by the given value
+func PathParam(key, value string) easyhttp.Interceptor {
 	return func(cli *easyhttp.Client, req *easyhttp.Request, do easyhttp.Doer) (reply *easyhttp.Reply, err error) {
 		rawRequest := req.RawRequest()
 		rawRequest.URL.Path = replace(rawRequest.URL.Path, key, value)
@@ -41,14 +42,50 @@ func Param(key, value string) easyhttp.Interceptor {
 	}
 }
 
-// Params replaces one or multiple path param expressions by the given map of key-value pairs
-func Params(params map[string]string) easyhttp.Interceptor {
+// PathParams replaces one or multiple path param expressions by the given map of key-value pairs
+func PathParams(params map[string]string) easyhttp.Interceptor {
 	return func(cli *easyhttp.Client, req *easyhttp.Request, do easyhttp.Doer) (reply *easyhttp.Reply, err error) {
 		rawRequest := req.RawRequest()
 		for key, value := range params {
 			rawRequest.URL.Path = replace(rawRequest.URL.Path, key, value)
 		}
 		req.SetRawRequest(rawRequest)
+		return do(cli, req)
+	}
+}
+
+func QueryParam(key string, values ...string) easyhttp.Interceptor {
+	return func(cli *easyhttp.Client, req *easyhttp.Request, do easyhttp.Doer) (reply *easyhttp.Reply, err error) {
+		query := make(url.Values)
+		for _, iv := range values {
+			query.Add(key, iv)
+		}
+		rawRequest := req.RawRequest()
+		reqURL := rawRequest.URL
+		if stringutils.IsBlank(reqURL.RawQuery) {
+			reqURL.RawQuery = query.Encode()
+		} else {
+			reqURL.RawQuery = reqURL.RawQuery + "&" + query.Encode()
+		}
+		return do(cli, req)
+	}
+}
+
+func QueryParams(param map[string][]string) easyhttp.Interceptor {
+	return func(cli *easyhttp.Client, req *easyhttp.Request, do easyhttp.Doer) (reply *easyhttp.Reply, err error) {
+		query := make(url.Values)
+		for k, v := range param {
+			for _, iv := range v {
+				query.Add(k, iv)
+			}
+		}
+		rawRequest := req.RawRequest()
+		reqURL := rawRequest.URL
+		if stringutils.IsBlank(reqURL.RawQuery) {
+			reqURL.RawQuery = query.Encode()
+		} else {
+			reqURL.RawQuery = reqURL.RawQuery + "&" + query.Encode()
+		}
 		return do(cli, req)
 	}
 }
