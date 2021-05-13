@@ -127,19 +127,19 @@ func WithCheckRedirect(policies ...func(req *http.Request, via []*http.Request) 
 	}
 }
 
-func TLS(config *tls.Config) ClientOption {
+func WithTLS(config *tls.Config) ClientOption {
 	return func(o *clientOptions) {
 		o.tlsConfig = config
 	}
 }
 
-func TLSHandshakeTimeout(timeout time.Duration) ClientOption {
+func WithTLSHandshakeTimeout(timeout time.Duration) ClientOption {
 	return func(o *clientOptions) {
 		o.tlsHandshakeTimeout = &timeout
 	}
 }
 
-func Proxy(servers map[string]string) ClientOption {
+func WithProxy(servers map[string]string) ClientOption {
 	return func(o *clientOptions) {
 		o.proxy = func(req *http.Request) (*url.URL, error) {
 			if value, ok := servers[req.URL.Scheme]; ok {
@@ -150,49 +150,49 @@ func Proxy(servers map[string]string) ClientOption {
 	}
 }
 
-func Compression(enabled bool) ClientOption {
+func WithCompression(enabled bool) ClientOption {
 	return func(o *clientOptions) {
 		o.compression = &enabled
 	}
 }
 
-func KeepAlives(enabled bool) ClientOption {
+func WithKeepAlives(enabled bool) ClientOption {
 	return func(o *clientOptions) {
 		o.keepAlives = &enabled
 	}
 }
 
-func MaxIdleConns(number int) ClientOption {
+func WithMaxIdleConns(number int) ClientOption {
 	return func(o *clientOptions) {
 		o.maxIdleConns = &number
 	}
 }
 
-func MaxIdleConnsPerHost(number int) ClientOption {
+func WithMaxIdleConnsPerHost(number int) ClientOption {
 	return func(o *clientOptions) {
 		o.maxIdleConnsPerHost = &number
 	}
 }
 
-func MaxConnsPerHost(number int) ClientOption {
+func WithMaxConnsPerHost(number int) ClientOption {
 	return func(o *clientOptions) {
 		o.maxConnsPerHost = &number
 	}
 }
 
-func IdleConnTimeout(timeout time.Duration) ClientOption {
+func WithIdleConnTimeout(timeout time.Duration) ClientOption {
 	return func(o *clientOptions) {
 		o.idleConnTimeout = &timeout
 	}
 }
 
-func WriteBufferSize(size int) ClientOption {
+func WithWriteBufferSize(size int) ClientOption {
 	return func(o *clientOptions) {
 		o.writeBufferSize = &size
 	}
 }
 
-func ReadBufferSize(size int) ClientOption {
+func WithReadBufferSize(size int) ClientOption {
 	return func(o *clientOptions) {
 		o.readBufferSize = &size
 	}
