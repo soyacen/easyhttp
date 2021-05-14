@@ -102,7 +102,7 @@ func Object(obj interface{}, contentType string, unmarshalFunc func(data []byte,
 		}
 
 		ct := rawResponse.Header.Get(kContentTypeKey)
-		if ct != contentType {
+		if !strings.Contains(ct, contentType) {
 			return reply, fmt.Errorf("expexted content-type is %s, but actual content-type is %s", contentType, ct)
 		}
 
