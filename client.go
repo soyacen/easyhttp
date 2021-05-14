@@ -3,6 +3,8 @@ package easyhttp
 import (
 	"context"
 	"crypto/tls"
+	"crypto/x509"
+	"io/ioutil"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
@@ -120,6 +122,32 @@ func WithCheckRedirect(policies ...func(req *http.Request, via []*http.Request) 
 			}
 			return nil
 		}
+	}
+}
+
+func WithCertificates(certs ...tls.Certificate) ClientOption {
+	return func(o *clientOptions) {
+		o.tlsConfig = &tls.Config{Certificates: append([]tls.Certificate{}, certs...)}
+	}
+}
+
+func WithRootCertificate(pemFilePath string) ClientOption {
+	return func(o *clientOptions) {
+		rootPemData, err := ioutil.ReadFile(pemFilePath)
+		if err != nil {
+			panic(err)
+		}
+		certPool := x509.NewCertPool()
+		certPool.AppendCertsFromPEM(rootPemData)
+		o.tlsConfig = &tls.Config{RootCAs: certPool}
+	}
+}
+
+func WithRootCertificateFromString(pemContent string) ClientOption {
+	return func(o *clientOptions) {
+		certPool := x509.NewCertPool()
+		certPool.AppendCertsFromPEM([]byte(pemContent))
+		o.tlsConfig = &tls.Config{RootCAs: certPool}
 	}
 }
 
