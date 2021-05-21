@@ -1,15 +1,17 @@
-package easyhttpbody
+package easyhttpreq
 
 import (
 	"bytes"
 	"encoding/json"
 	"encoding/xml"
+	"errors"
 	"io"
 	"net/http"
 	"net/url"
 	"strconv"
 
 	"github.com/soyacen/bytebufferpool"
+	"google.golang.org/protobuf/proto"
 
 	"github.com/soyacen/easyhttp"
 )
@@ -20,10 +22,11 @@ var (
 )
 
 const (
-	kFormContentType = "application/x-www-form-urlencoded"
-	JsonContentType  = "application/json"
-	XMLContentType   = "application/xml"
-	kTextContentType = "text/plain"
+	kFormContentType     = "application/x-www-form-urlencoded"
+	kJsonContentType     = "application/json"
+	kXMLContentType      = "application/xml"
+	kTextContentType     = "text/plain"
+	kProtobufContentType = "application/x-protobuf"
 )
 
 func setContent(bodyBuf *bytebufferpool.ByteBuffer, req *easyhttp.Request, ct string) {
@@ -93,7 +96,7 @@ func JSON(obj interface{}, marshalFunc ...func(v interface{}) ([]byte, error)) e
 	if len(marshalFunc) > 0 {
 		marshal = marshalFunc[0]
 	}
-	return Object(obj, JsonContentType, marshal)
+	return Object(obj, kJsonContentType, marshal)
 }
 
 func XML(obj interface{}, marshalFunc ...func(v interface{}) ([]byte, error)) easyhttp.Interceptor {
@@ -101,7 +104,21 @@ func XML(obj interface{}, marshalFunc ...func(v interface{}) ([]byte, error)) ea
 	if len(marshalFunc) > 0 {
 		marshal = marshalFunc[0]
 	}
-	return Object(obj, XMLContentType, marshal)
+	return Object(obj, kXMLContentType, marshal)
+}
+
+func Protobuf(obj proto.Message, marshalFunc ...func(v proto.Message) ([]byte, error)) easyhttp.Interceptor {
+	marshal := proto.Marshal
+	if len(marshalFunc) > 0 {
+		marshal = marshalFunc[0]
+	}
+	return Object(obj, kJsonContentType, func(v interface{}) ([]byte, error) {
+		message, ok := v.(proto.Message)
+		if !ok {
+			return nil, errors.New("failed convert obj to proto.Message")
+		}
+		return marshal(message)
+	})
 }
 
 func Object(obj interface{}, contentType string, marshalFunc func(v interface{}) ([]byte, error)) easyhttp.Interceptor {

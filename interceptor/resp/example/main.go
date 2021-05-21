@@ -7,7 +7,7 @@ import (
 
 	"github.com/soyacen/easyhttp"
 
-	easyhttpaccept "github.com/soyacen/easyhttp/interceptor/accpet"
+	easyhttpresp "github.com/soyacen/easyhttp/interceptor/resp"
 )
 
 func main() {
@@ -16,7 +16,7 @@ func main() {
 	reply, err := client.Get(
 		context.Background(),
 		"http://httpbin.org/json",
-		easyhttp.ChainInterceptor(easyhttpaccept.JSON(&data)))
+		easyhttp.ChainInterceptor(easyhttpresp.JSON(&data)))
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -29,7 +29,7 @@ func main() {
 	reply1, err := client.Get(
 		context.Background(),
 		"http://httpbin.org/gzip",
-		easyhttp.ChainInterceptor(easyhttpaccept.JSON(&data1)))
+		easyhttp.ChainInterceptor(easyhttpresp.JSON(&data1)))
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -42,7 +42,7 @@ func main() {
 	reply2, err := client.Get(
 		context.Background(),
 		"http://httpbin.org/xml",
-		easyhttp.ChainInterceptor(easyhttpaccept.XML(&data2)))
+		easyhttp.ChainInterceptor(easyhttpresp.XML(&data2)))
 	if err != nil {
 		log.Fatalln(err)
 	}

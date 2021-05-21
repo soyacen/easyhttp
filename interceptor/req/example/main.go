@@ -9,7 +9,7 @@ import (
 
 	"github.com/soyacen/easyhttp"
 
-	easyhttpbody "github.com/soyacen/easyhttp/interceptor/body"
+	easyhttpreq "github.com/soyacen/easyhttp/interceptor/req"
 )
 
 func ExampleJSONString() {
@@ -17,7 +17,7 @@ func ExampleJSONString() {
 	reply, err := client.Post(
 		context.Background(),
 		"http://httpbin.org/post",
-		easyhttp.ChainInterceptor(easyhttpbody.JSON(`{"extra":null,"accesskey":"rfe65iisgjr4ltgp","expid":"62","entity":"869791045881921","traceid":"f7eef0d861379d6681940f07b548eff1","bucket":"2499","group":"174","ts":"1620389233"}`)))
+		easyhttp.ChainInterceptor(easyhttpreq.JSON(`{"extra":null,"accesskey":"rfe65iisgjr4ltgp","expid":"62","entity":"869791045881921","traceid":"f7eef0d861379d6681940f07b548eff1","bucket":"2499","group":"174","ts":"1620389233"}`)))
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -51,7 +51,7 @@ func ExampleXML() {
 	reply, err := client.Post(
 		context.Background(),
 		"http://httpbin.org/post",
-		easyhttp.ChainInterceptor(easyhttpbody.XML(data)))
+		easyhttp.ChainInterceptor(easyhttpreq.XML(data)))
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -76,7 +76,7 @@ func ExampleJSON() {
 	reply, err := client.Post(
 		context.Background(),
 		"http://httpbin.org/post",
-		easyhttp.ChainInterceptor(easyhttpbody.JSON(data)))
+		easyhttp.ChainInterceptor(easyhttpreq.JSON(data)))
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -101,7 +101,7 @@ func ExampleForm() {
 	reply, err := client.Post(
 		context.Background(),
 		"http://httpbin.org/post",
-		easyhttp.ChainInterceptor(easyhttpbody.Form(form)))
+		easyhttp.ChainInterceptor(easyhttpreq.Form(form)))
 	if err != nil {
 		log.Fatalln(err)
 	}

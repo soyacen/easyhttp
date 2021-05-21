@@ -18,8 +18,8 @@ go get -u github.com/soyacen/easyhttp
 ```
 
 ## Plugins
-- [accept](https://github.com/soyacen/easyhttp/tree/main/interceptor/accept) 
-- [body](https://github.com/soyacen/easyhttp/tree/main/interceptor/body)
+- [resp](https://github.com/soyacen/easyhttp/tree/main/interceptor/resp) 
+- [req](https://github.com/soyacen/easyhttp/tree/main/interceptor/req)
 - [auth](https://github.com/soyacen/easyhttp/tree/main/interceptor/auth)
 - [cookie](https://github.com/soyacen/easyhttp/tree/main/interceptor/cookie)
 - [download](https://github.com/soyacen/easyhttp/tree/main/interceptor/download)

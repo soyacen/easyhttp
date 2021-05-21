@@ -1,4 +1,4 @@
-package easyhttpaccept
+package easyhttpresp
 
 import (
 	"compress/gzip"
@@ -14,6 +14,7 @@ import (
 	"github.com/soyacen/bytebufferpool"
 	"github.com/soyacen/easyhttp"
 	"github.com/soyacen/goutils/ioutils"
+	"google.golang.org/protobuf/proto"
 )
 
 var (
@@ -23,8 +24,9 @@ var (
 )
 
 const (
-	JsonContentType = "application/json"
-	XMLContentType  = "application/xml"
+	kJsonContentType     = "application/json"
+	kXMLContentType      = "application/xml"
+	kProtobufContentType = "application/x-protobuf"
 )
 
 func writeObj(obj interface{}, bodyBuf *bytebufferpool.ByteBuffer, marshal func(v interface{}) ([]byte, error)) error {
@@ -48,7 +50,7 @@ func JSON(obj interface{}, unmarshalFunc ...func(data []byte, v interface{}) err
 	if len(unmarshalFunc) > 0 {
 		unmarshal = unmarshalFunc[0]
 	}
-	return Object(obj, JsonContentType, unmarshal)
+	return Object(obj, kJsonContentType, unmarshal)
 }
 
 func XML(obj interface{}, unmarshalFunc ...func(data []byte, v interface{}) error) easyhttp.Interceptor {
@@ -56,7 +58,21 @@ func XML(obj interface{}, unmarshalFunc ...func(data []byte, v interface{}) erro
 	if len(unmarshalFunc) > 0 {
 		unmarshal = unmarshalFunc[0]
 	}
-	return Object(obj, XMLContentType, unmarshal)
+	return Object(obj, kXMLContentType, unmarshal)
+}
+
+func Protobuf(obj proto.Message, unmarshalFunc ...func(data []byte, message proto.Message) error) easyhttp.Interceptor {
+	unmarshal := proto.Unmarshal
+	if len(unmarshalFunc) > 0 {
+		unmarshal = unmarshalFunc[0]
+	}
+	return Object(obj, kProtobufContentType, func(data []byte, v interface{}) error {
+		message, ok := v.(proto.Message)
+		if !ok {
+			return errors.New("failed convert obj to proto.Message")
+		}
+		return unmarshal(data, message)
+	})
 }
 
 func Object(obj interface{}, contentType string, unmarshalFunc func(data []byte, v interface{}) error) easyhttp.Interceptor {
