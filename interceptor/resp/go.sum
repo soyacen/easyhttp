@@ -12,6 +12,8 @@ github.com/soyacen/easyhttp v0.0.0-20210507012034-3769b0914be4 h1:TsWkauZZeHoxFS
 github.com/soyacen/easyhttp v0.0.0-20210507012034-3769b0914be4/go.mod h1:h0wBQThwVOLm3DzZ7Alfe8Naga/7RcDi/nFxq70WeaI=
 github.com/soyacen/goutils/ioutils v0.0.0-20210511094924-53f8d21e0b58 h1:ik3rod7R6JHEtRoJc3hcT8ixXUGa4xG+n8nhfGhnbSU=
 github.com/soyacen/goutils/ioutils v0.0.0-20210511094924-53f8d21e0b58/go.mod h1:vzKs7QewYUqY9kILFq/YMMX7M/OqReqep81C1L4qEvQ=
+github.com/soyacen/goutils/stringutils v0.0.0-20210521062650-500e3ddacf41 h1:i3DL+dcHRUESpdJEbAJwodqXi01kDONmhA+bszJBHBU=
+github.com/soyacen/goutils/stringutils v0.0.0-20210521062650-500e3ddacf41/go.mod h1:j+MC3Z6FtFj/ZL/0euaqAKAly0ezNNkAIyaD/ExKDTI=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
 golang.org/x/net v0.0.0-20210427231257-85d9c07bbe3a h1:njMmldwFTyDLqonHMagNXKBWptTBeDZOdblgaDsNEGQ=
