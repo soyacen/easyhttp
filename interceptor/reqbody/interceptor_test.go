@@ -1,23 +1,21 @@
-package main
+package easyhttpreqbody
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http/httputil"
 	"net/url"
+	"testing"
 
 	"github.com/soyacen/easyhttp"
-
-	easyhttpreq "github.com/soyacen/easyhttp/interceptor/req"
 )
 
-func ExampleJSONString() {
+func TestJSONString(t *testing.T) {
 	client := easyhttp.NewClient()
 	reply, err := client.Post(
 		context.Background(),
 		"http://httpbin.org/post",
-		easyhttp.ChainInterceptor(easyhttpreq.JSON(`{"extra":null,"accesskey":"rfe65iisgjr4ltgp","expid":"62","entity":"869791045881921","traceid":"f7eef0d861379d6681940f07b548eff1","bucket":"2499","group":"174","ts":"1620389233"}`)))
+		easyhttp.ChainInterceptor(JSON(`{"extra":null,"accesskey":"rfe65iisgjr4ltgp","expid":"62","entity":"869791045881921","traceid":"f7eef0d861379d6681940f07b548eff1","bucket":"2499","group":"174","ts":"1620389233"}`)))
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -25,10 +23,10 @@ func ExampleJSONString() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Println(string(response))
+	t.Log(string(response))
 }
 
-func ExampleXML() {
+func TestExampleXML(t *testing.T) {
 	client := easyhttp.NewClient()
 	type Data struct {
 		Comments  string `xml:"comments"`
@@ -51,7 +49,7 @@ func ExampleXML() {
 	reply, err := client.Post(
 		context.Background(),
 		"http://httpbin.org/post",
-		easyhttp.ChainInterceptor(easyhttpreq.XML(data)))
+		easyhttp.ChainInterceptor(XML(data)))
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -59,10 +57,11 @@ func ExampleXML() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Println(string(response))
+	t.Log(string(response))
+
 }
 
-func ExampleJSON() {
+func TestJSON(t *testing.T) {
 	client := easyhttp.NewClient()
 	data := map[string]string{
 		"comments":  "adsa",
@@ -76,7 +75,7 @@ func ExampleJSON() {
 	reply, err := client.Post(
 		context.Background(),
 		"http://httpbin.org/post",
-		easyhttp.ChainInterceptor(easyhttpreq.JSON(data)))
+		easyhttp.ChainInterceptor(JSON(data)))
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -84,10 +83,11 @@ func ExampleJSON() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Println(string(response))
+	t.Log(string(response))
+
 }
 
-func ExampleForm() {
+func TestForm(t *testing.T) {
 	client := easyhttp.NewClient()
 	form := url.Values{
 		"comments":  []string{"adsa"},
@@ -101,7 +101,7 @@ func ExampleForm() {
 	reply, err := client.Post(
 		context.Background(),
 		"http://httpbin.org/post",
-		easyhttp.ChainInterceptor(easyhttpreq.Form(form)))
+		easyhttp.ChainInterceptor(Form(form)))
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -109,6 +109,6 @@ func ExampleForm() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Println(string(response))
+	t.Log(string(response))
 
 }

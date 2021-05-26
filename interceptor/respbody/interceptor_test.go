@@ -1,53 +1,40 @@
-package main
+package easyhttprespbody
 
 import (
 	"context"
-	"fmt"
 	"log"
+	"testing"
 
 	"github.com/soyacen/easyhttp"
-
-	easyhttpresp "github.com/soyacen/easyhttp/interceptor/resp"
 )
 
-func main() {
+func TestRespBody(t *testing.T) {
 	client := easyhttp.NewClient()
 	data := Data{}
 	reply, err := client.Get(
 		context.Background(),
 		"http://httpbin.org/json",
-		easyhttp.ChainInterceptor(easyhttpresp.JSON(&data)))
+		easyhttp.ChainInterceptor(JSON(&data)))
 	if err != nil {
-		log.Fatalln(err)
+		t.Fatal(err)
 	}
-	fmt.Println(reply.RawResponse().StatusCode)
-	fmt.Println(data)
-
-	fmt.Println("======================")
+	t.Log(reply.RawResponse().StatusCode)
+	t.Log(data)
+	t.Log("======================")
 
 	data1 := Data{}
 	reply1, err := client.Get(
 		context.Background(),
 		"http://httpbin.org/gzip",
-		easyhttp.ChainInterceptor(easyhttpresp.JSON(&data1)))
+		easyhttp.ChainInterceptor(JSON(&data1)))
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Println(reply1.RawResponse().StatusCode)
-	fmt.Println(data1)
+	t.Log(reply1.RawResponse().StatusCode)
+	t.Log(data1)
 
-	fmt.Println("======================")
+	t.Log("======================")
 
-	data2 := Data{}
-	reply2, err := client.Get(
-		context.Background(),
-		"http://httpbin.org/xml",
-		easyhttp.ChainInterceptor(easyhttpresp.XML(&data2)))
-	if err != nil {
-		log.Fatalln(err)
-	}
-	fmt.Println(reply2.RawResponse().StatusCode)
-	fmt.Println(data2)
 }
 
 type Data struct {

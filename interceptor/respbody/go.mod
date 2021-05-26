@@ -1,4 +1,4 @@
-module github.com/soyacen/easyhttp/interceptor/resp
+module github.com/soyacen/easyhttp/interceptor/respbody
 
 go 1.16
 

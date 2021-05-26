@@ -1,4 +1,4 @@
-module github.com/soyacen/easyhttp/interceptor/req
+module github.com/soyacen/easyhttp/interceptor/reqbody
 
 go 1.16
 

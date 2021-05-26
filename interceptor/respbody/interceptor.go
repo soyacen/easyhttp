@@ -1,4 +1,4 @@
-package easyhttpresp
+package easyhttprespbody
 
 import (
 	"compress/gzip"

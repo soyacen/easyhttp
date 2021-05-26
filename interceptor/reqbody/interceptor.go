@@ -1,4 +1,4 @@
-package easyhttpreq
+package easyhttpreqbody
 
 import (
 	"bytes"
