@@ -112,7 +112,7 @@ func Protobuf(obj proto.Message, marshalFunc ...func(v proto.Message) ([]byte, e
 	if len(marshalFunc) > 0 {
 		marshal = marshalFunc[0]
 	}
-	return Object(obj, kJsonContentType, func(v interface{}) ([]byte, error) {
+	return Object(obj, kProtobufContentType, func(v interface{}) ([]byte, error) {
 		message, ok := v.(proto.Message)
 		if !ok {
 			return nil, errors.New("failed convert obj to proto.Message")

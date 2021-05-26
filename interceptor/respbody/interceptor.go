@@ -104,7 +104,7 @@ func XML(obj interface{}, opts ...Option) easyhttp.Interceptor {
 
 func Protobuf(obj proto.Message, opts ...Option) easyhttp.Interceptor {
 	o := defaultOptions()
-	o.contentType = kXMLContentType
+	o.contentType = kProtobufContentType
 	o.unmarshalFunc = func(data []byte, v interface{}) error {
 		message, ok := v.(proto.Message)
 		if !ok {
