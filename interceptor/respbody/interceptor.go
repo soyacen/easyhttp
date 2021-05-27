@@ -1,12 +1,10 @@
 package easyhttprespbody
 
 import (
-	"compress/gzip"
 	"encoding/json"
 	"encoding/xml"
 	"errors"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -142,26 +140,13 @@ func object(obj interface{}, o *options) easyhttp.Interceptor {
 		if reply == nil || rawResponse == nil {
 			return reply, err
 		}
-		if rawResponse.Body != nil {
-			defer ioutils.CloseThrowError(rawResponse.Body, &err)
+		body := rawResponse.Body
+		if body != nil {
+			defer ioutils.CloseThrowError(body, &err)
 		}
 		if rawResponse.ContentLength == 0 {
 			return reply, err
 		}
-		var body io.Reader
-		body = rawResponse.Body
-		cek := rawResponse.Header.Get(kContentEncodingKey)
-		if strings.EqualFold(cek, "gzip") {
-			if _, ok := rawResponse.Body.(*gzip.Reader); !ok {
-				gzipReader, err := gzip.NewReader(rawResponse.Body)
-				if err != nil {
-					return reply, err
-				}
-				defer ioutils.CloseThrowError(gzipReader, &err)
-				body = gzipReader
-			}
-		}
-
 		ct := rawResponse.Header.Get(kContentTypeKey)
 		if o.checkContentType && stringutils.IsNotBlank(ct) && !strings.Contains(ct, o.contentType) {
 			return reply, fmt.Errorf("expexted content-type is %s, but actual content-type is %s", o.contentType, ct)
