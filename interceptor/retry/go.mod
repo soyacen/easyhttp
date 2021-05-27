@@ -4,7 +4,6 @@ go 1.16
 
 require (
 	github.com/soyacen/bytebufferpool v1.0.1
-	github.com/soyacen/easyhttp v0.0.0-20210508073839-2d9542e104ad
-	golang.org/x/net v0.0.0-20210508051633-16afe75a6701 // indirect
+	github.com/soyacen/easyhttp v0.0.0-20210527052844-4cf2900cad5f
+	golang.org/x/net v0.0.0-20210525063256-abc453219eb5 // indirect
 )
-

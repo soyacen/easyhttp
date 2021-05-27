@@ -92,9 +92,7 @@ func defaultOptions() *options {
 		includeHeader:             true,
 		shouldRetryWithError:      defaultRetryWithError,
 		shouldRetryWithStatusCode: defaultRetryWithStatusCode,
-		backoffFunc: BackoffFunc(func(attempt uint) time.Duration {
-			return BackoffExponentialWithJitter(50*time.Millisecond, 0.10)(attempt)
-		}),
+		backoffFunc:               BackoffExponentialWithJitter(50*time.Millisecond, 0.10),
 	}
 	return o
 }
