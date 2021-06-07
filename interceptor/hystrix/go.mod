@@ -1,6 +1,6 @@
 module github.com/soyacen/easyhttp/interceptor/hystrix
 
-go 1.16
+go 1.15
 
 require (
 	github.com/DataDog/datadog-go v4.7.0+incompatible // indirect

@@ -1,6 +1,6 @@
 module github.com/soyacen/easyhttp/interceptor/cookie
 
-go 1.16
+go 1.15
 
 require (
 	github.com/opentracing-contrib/go-stdlib v1.0.0 // indirect

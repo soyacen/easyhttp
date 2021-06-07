@@ -1,6 +1,6 @@
 module github.com/soyacen/easyhttp/interceptor/multipart
 
-go 1.16
+go 1.15
 
 require (
 	github.com/soyacen/bytebufferpool v1.0.1

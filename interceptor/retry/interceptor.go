@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 	"time"
@@ -34,11 +35,11 @@ func Retry(opts ...Option) easyhttp.Interceptor {
 				return nil, err
 			}
 			bodyReader = bytes.NewReader(bodyBuf.Bytes())
-			rawRequest.Body = io.NopCloser(bodyReader)
+			rawRequest.Body = ioutil.NopCloser(bodyReader)
 			rawRequest.ContentLength = int64(bodyBuf.Len())
 			buf := bodyBuf.Bytes()
 			rawRequest.GetBody = func() (io.ReadCloser, error) {
-				return io.NopCloser(bytes.NewReader(buf)), nil
+				return ioutil.NopCloser(bytes.NewReader(buf)), nil
 			}
 		}
 

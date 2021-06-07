@@ -6,6 +6,7 @@ import (
 	"encoding/xml"
 	"errors"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -31,11 +32,11 @@ const (
 
 func setContent(bodyBuf *bytebufferpool.ByteBuffer, req *easyhttp.Request, ct string) {
 	rawRequest := req.RawRequest()
-	rawRequest.Body = io.NopCloser(bytes.NewReader(bodyBuf.Bytes()))
+	rawRequest.Body = ioutil.NopCloser(bytes.NewReader(bodyBuf.Bytes()))
 	rawRequest.ContentLength = int64(bodyBuf.Len())
 	buf := bodyBuf.Bytes()
 	rawRequest.GetBody = func() (io.ReadCloser, error) {
-		return io.NopCloser(bytes.NewReader(buf)), nil
+		return ioutil.NopCloser(bytes.NewReader(buf)), nil
 	}
 	if rawRequest.Header == nil {
 		rawRequest.Header = make(http.Header)
