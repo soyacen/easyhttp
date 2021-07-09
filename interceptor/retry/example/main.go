@@ -19,7 +19,7 @@ func main() {
 		context.Background(),
 		"http://httpbin.org/status/500",
 		easyhttp.ChainInterceptor(
-			easyhttpretry.Retry(
+			easyhttpretry.Interceptor(
 				easyhttpretry.WithBackoff(easyhttpretry.BackoffLinear(time.Second)),
 				easyhttpretry.WithTimeout(time.Second),
 				easyhttpretry.WithMaxAttempts(2),
@@ -42,7 +42,7 @@ func Example400() {
 		timeout,
 		"http://httpbin.org/status/400",
 		easyhttp.ChainInterceptor(
-			easyhttpretry.Retry(
+			easyhttpretry.Interceptor(
 				easyhttpretry.WithTimeout(time.Second),
 				easyhttpretry.WithMaxAttempts(2),
 			)))
@@ -64,7 +64,7 @@ func Example200() {
 		timeout,
 		"http://httpbin.org/status/200",
 		easyhttp.ChainInterceptor(
-			easyhttpretry.Retry(
+			easyhttpretry.Interceptor(
 				easyhttpretry.WithBackoff(easyhttpretry.BackoffLinear(time.Second)),
 				easyhttpretry.WithTimeout(time.Second),
 				easyhttpretry.WithMaxAttempts(2),

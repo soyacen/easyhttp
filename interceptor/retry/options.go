@@ -75,7 +75,6 @@ func WithTimeout(timeout time.Duration) Option {
 type options struct {
 	maxAttempts               uint
 	timeout                   time.Duration
-	includeHeader             bool
 	backoffFunc               BackoffFunc
 	shouldRetryWithError      RetryWithError
 	shouldRetryWithStatusCode RetryWithStatusCode
@@ -89,7 +88,6 @@ func defaultOptions() *options {
 	o := &options{
 		maxAttempts:               0,
 		timeout:                   0,
-		includeHeader:             true,
 		shouldRetryWithError:      defaultRetryWithError,
 		shouldRetryWithStatusCode: defaultRetryWithStatusCode,
 		backoffFunc:               BackoffExponentialWithJitter(50*time.Millisecond, 0.10),
