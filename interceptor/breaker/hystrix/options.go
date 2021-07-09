@@ -1,4 +1,4 @@
-package easyhttphystrix
+package easyhttphystrixbreaker
 
 import (
 	"time"
@@ -10,7 +10,6 @@ type fallbackFunc func(error) error
 
 // options is the hystrix client implementation
 type options struct {
-	hystrixCommandName     string
 	hystrixTimeout         time.Duration
 	maxConcurrentRequests  int
 	requestVolumeThreshold int
@@ -28,13 +27,6 @@ func (o *options) apply(opts ...Option) {
 
 // Option represents the hystrix client options
 type Option func(*options)
-
-// WithCommandName sets the hystrix command name
-func WithCommandName(name string) Option {
-	return func(c *options) {
-		c.hystrixCommandName = name
-	}
-}
 
 // WithHystrixTimeout sets hystrix timeout
 func WithHystrixTimeout(timeout time.Duration) Option {
@@ -98,7 +90,6 @@ const (
 
 func defaultOptions() *options {
 	return &options{
-		hystrixCommandName:     "",
 		fallbackFunc:           nil,
 		hystrixTimeout:         defaultHystrixTimeout,
 		maxConcurrentRequests:  defaultMaxConcurrentRequests,

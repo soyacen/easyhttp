@@ -12,6 +12,7 @@ require (
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
 	github.com/smartystreets/assertions v1.2.0 // indirect
+	github.com/sony/gobreaker v0.4.1
 	github.com/soyacen/bytebufferpool v1.0.1
 	github.com/soyacen/goutils/ioutils v0.0.0-20210616052321-7cb308881ea7
 	github.com/soyacen/goutils/stringutils v0.0.0-20210616052321-7cb308881ea7

@@ -18,18 +18,17 @@ go get -u github.com/soyacen/easyhttp
 ```
 
 ## Plugins
-- [resp](https://github.com/soyacen/easyhttp/tree/main/interceptor/resp) 
-- [req](https://github.com/soyacen/easyhttp/tree/main/interceptor/req)
 - [auth](https://github.com/soyacen/easyhttp/tree/main/interceptor/auth)
+- [breaker](https://github.com/soyacen/easyhttp/tree/main/interceptor/breaker)
 - [cookie](https://github.com/soyacen/easyhttp/tree/main/interceptor/cookie)
 - [download](https://github.com/soyacen/easyhttp/tree/main/interceptor/download)
 - [header](https://github.com/soyacen/easyhttp/tree/main/interceptor/header)
-- [hystrix](https://github.com/soyacen/easyhttp/tree/main/interceptor/hystrix)
 - [logging](https://github.com/soyacen/easyhttp/tree/main/interceptor/logging)
 - [multipart](https://github.com/soyacen/easyhttp/tree/main/interceptor/multipart)
-- [opentracing](https://github.com/soyacen/easyhttp/tree/main/interceptor/opentracing) 
-- [proxy](https://github.com/soyacen/easyhttp/tree/main/interceptor/proxy) 
-- [retry](https://github.com/soyacen/easyhttp/tree/main/interceptor/retry) 
+- [opentracing](https://github.com/soyacen/easyhttp/tree/main/interceptor/opentracing)
+- [respbody](https://github.com/soyacen/easyhttp/tree/main/interceptor/respbody) 
+- [reqbody](https://github.com/soyacen/easyhttp/tree/main/interceptor/reqbody)
+- [retry](https://github.com/soyacen/easyhttp/tree/main/interceptor/retry)
 - [url](https://github.com/soyacen/easyhttp/tree/main/interceptor/url) 
 
 
