@@ -17,6 +17,8 @@ require (
 	github.com/soyacen/goutils/ioutils v0.0.0-20210616052321-7cb308881ea7
 	github.com/soyacen/goutils/stringutils v0.0.0-20210616052321-7cb308881ea7
 	github.com/stretchr/objx v0.3.0 // indirect
+	go.opentelemetry.io/otel v1.0.0-RC1
+	go.opentelemetry.io/otel/trace v1.0.0-RC1
 	golang.org/x/net v0.0.0-20210510120150-4163338589ed
 	golang.org/x/sys v0.0.0-20210511113859-b0526f3d8744 // indirect
 	google.golang.org/protobuf v1.26.0
