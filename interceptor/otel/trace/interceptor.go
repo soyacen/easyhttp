@@ -1,13 +1,10 @@
 package easyhttpopentracing
 
 import (
-	"io"
-
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/propagation"
 	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 	"go.opentelemetry.io/otel/trace"
-	"google.golang.org/grpc/status"
 
 	"github.com/soyacen/easyhttp"
 )
@@ -30,9 +27,9 @@ func Interceptor(opts ...Option) easyhttp.Interceptor {
 		o.propagator.Inject(ctx, propagation.HeaderCarrier(req.RawRequest().Header))
 		req.SetContext(ctx)
 		reply, err = do(cli, req)
-		if err != nil && err != io.EOF {
+		if err != nil {
 			span.RecordError(err)
-			span.SetStatus(codes.Error, status.Code(err).String())
+			span.SetStatus(codes.Error, err.Error())
 		} else {
 			span.SetStatus(codes.Ok, "OK")
 		}
