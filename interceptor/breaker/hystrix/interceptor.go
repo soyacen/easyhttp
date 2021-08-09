@@ -28,7 +28,7 @@ func Interceptor(commandName string, opts ...Option) easyhttp.Interceptor {
 		Timeout:                durationToInt(o.timeout, time.Millisecond),
 		MaxConcurrentRequests:  o.maxConcurrentRequests,
 		RequestVolumeThreshold: o.requestVolumeThreshold,
-		SleepWindow:            o.sleepWindow,
+		SleepWindow:            durationToInt(o.sleepWindow, time.Millisecond),
 		ErrorPercentThreshold:  o.errorPercentThreshold,
 	})
 	return func(cli *easyhttp.Client, req *easyhttp.Request, do easyhttp.Doer) (reply *easyhttp.Reply, err error) {
