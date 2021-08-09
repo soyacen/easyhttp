@@ -36,9 +36,6 @@ func Interceptor(commandName string, opts ...Option) easyhttp.Interceptor {
 			if err != nil {
 				return err
 			}
-			if reply == nil {
-				return errors.New("reply is nil")
-			}
 			if reply.RawResponse() == nil {
 				return errors.New("http response is nil")
 			}

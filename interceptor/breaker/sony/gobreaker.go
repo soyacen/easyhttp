@@ -20,9 +20,6 @@ func Interceptor(Name string, opts ...Option) easyhttp.Interceptor {
 			if err != nil {
 				return nil, err
 			}
-			if reply == nil {
-				return nil, errors.New("reply is nil")
-			}
 			if reply.RawResponse() == nil {
 				return nil, errors.New("http response is nil")
 			}
