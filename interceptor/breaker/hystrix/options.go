@@ -1,12 +1,11 @@
 package easyhttphystrixbreaker
 
 import (
+	"context"
 	"time"
 
 	"github.com/afex/hystrix-go/plugins"
 )
-
-type fallbackFunc func(error) error
 
 // options is the hystrix client implementation
 type options struct {
@@ -15,7 +14,7 @@ type options struct {
 	requestVolumeThreshold int
 	sleepWindow            int
 	errorPercentThreshold  int
-	fallbackFunc           func(err error) error
+	fallbackFunc           func(ctx context.Context, err error) error
 	statsD                 *plugins.StatsdCollectorConfig
 }
 
@@ -64,7 +63,7 @@ func WithErrorPercentThreshold(errorPercentThreshold int) Option {
 }
 
 // WithFallbackFunc sets the fallback function
-func WithFallbackFunc(fn fallbackFunc) Option {
+func WithFallbackFunc(fn func(ctx context.Context, err error) error) Option {
 	return func(c *options) {
 		c.fallbackFunc = fn
 	}

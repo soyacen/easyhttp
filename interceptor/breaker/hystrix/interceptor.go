@@ -1,6 +1,7 @@
 package easyhttphystrixbreaker
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
@@ -31,7 +32,7 @@ func Interceptor(commandName string, opts ...Option) easyhttp.Interceptor {
 		ErrorPercentThreshold:  o.errorPercentThreshold,
 	})
 	return func(cli *easyhttp.Client, req *easyhttp.Request, do easyhttp.Doer) (reply *easyhttp.Reply, err error) {
-		err = hystrix.Do(commandName, func() error {
+		err = hystrix.DoC(req.Context(), commandName, func(ctx context.Context) error {
 			reply, err = do(cli, req)
 			if err != nil {
 				return err
