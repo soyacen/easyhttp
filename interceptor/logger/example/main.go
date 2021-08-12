@@ -10,14 +10,22 @@ import (
 	easyhttplogger "github.com/soyacen/easyhttp/interceptor/logger"
 )
 
+type Logger struct {
+}
+
+func (l *Logger) Log(fields map[string]interface{}) {
+	fmt.Println(fields)
+}
+
 func main() {
 	client := easyhttp.NewClient()
 	reply, err := client.Get(
 		context.Background(),
 		"http://httpbin.org/get",
-		easyhttp.ChainInterceptor(easyhttplogger.Interceptor(func(fields *easyhttplogger.Fields, reply *easyhttp.Reply) {
-			log.Println(fields)
-		})))
+		easyhttp.ChainInterceptor(easyhttplogger.Interceptor(easyhttplogger.WithLoggerFactory(
+			func(ctx context.Context) easyhttplogger.Logger {
+				return &Logger{}
+			}))))
 	if err != nil {
 		log.Fatalln(err)
 	}

@@ -1,50 +1,36 @@
 package easyhttplogger
 
 import (
-	"net/http"
 	"time"
 
 	"github.com/soyacen/easyhttp"
 )
 
-type Fields struct {
-	System         string
-	Method         string
-	URL            string
-	StartTime      time.Time
-	Deadline       time.Time
-	Duration       time.Duration
-	RequestHeader  http.Header
-	Error          error
-	requestBody    []byte
-	ResponseHeader http.Header
-	Status         string
-	StatusCode     int
-}
-
-func Interceptor(logFunc func(fields *Fields, reply *easyhttp.Reply)) easyhttp.Interceptor {
+func Interceptor(opts ...Option) easyhttp.Interceptor {
+	o := defaultOptions()
+	o.apply(opts...)
 	return func(cli *easyhttp.Client, req *easyhttp.Request, do easyhttp.Doer) (reply *easyhttp.Reply, err error) {
+		if o.loggerFactory == nil {
+			return do(cli, req)
+		}
+		logger := o.loggerFactory(req.RawRequest().Context())
 		startTime := time.Now()
-		fields := &Fields{
-			System:    "http.client",
-			StartTime: startTime,
-		}
-		if d, ok := req.RawRequest().Context().Deadline(); ok {
-			fields.Deadline = d
-		}
-		rawRequest := req.RawRequest()
-		fields.Method = rawRequest.Method
-		fields.URL = rawRequest.URL.String()
-		fields.RequestHeader = rawRequest.Header.Clone()
 		r, err := do(cli, req)
+		rawRequest := req.RawRequest()
 		rawResponse := r.RawResponse()
-		fields.Duration = time.Since(startTime)
-		fields.Status = rawResponse.Status
-		fields.StatusCode = rawResponse.StatusCode
-		fields.ResponseHeader = rawResponse.Header.Clone()
-		fields.Error = err
-
-		logFunc(fields, reply)
+		builder := NewFieldBuilder().
+			System().
+			StartTime(startTime).
+			Deadline(req.RawRequest().Context()).
+			Method(rawRequest.Method).
+			URI(rawRequest.URL.String()).
+			RequestHeader(rawRequest.Header.Clone()).
+			Latency(time.Since(startTime)).
+			Status(rawResponse.Status).
+			StatusCode(rawResponse.StatusCode).
+			ResponseHeader(rawResponse.Header.Clone()).
+			Error(err)
+		logger.Log(builder.Build())
 		return r, err
 	}
 }
