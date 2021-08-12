@@ -1,4 +1,4 @@
-package easyhttphystrixbreaker
+package easyhttphystrix
 
 import (
 	"context"

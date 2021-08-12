@@ -12,9 +12,10 @@ import (
 	"strings"
 
 	"github.com/soyacen/bytebufferpool"
-	"github.com/soyacen/easyhttp"
 	"github.com/soyacen/goutils/ioutils"
 	"github.com/soyacen/goutils/stringutils"
+
+	"github.com/soyacen/easyhttp"
 )
 
 type FormData struct {
@@ -47,7 +48,7 @@ func NewData(fieldName string, data string) *FormData {
 	}
 }
 
-func Multipart(formData ...*FormData) easyhttp.Interceptor {
+func Interceptor(formData ...*FormData) easyhttp.Interceptor {
 	return func(cli *easyhttp.Client, req *easyhttp.Request, do easyhttp.Doer) (reply *easyhttp.Reply, err error) {
 		for _, file := range formData {
 			if stringutils.IsNotEmpty(file.data) {

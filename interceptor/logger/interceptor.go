@@ -1,4 +1,4 @@
-package easyhttplogging
+package easyhttplogger
 
 import (
 	"net/http"
@@ -22,7 +22,7 @@ type Fields struct {
 	StatusCode     int
 }
 
-func Logger(logFunc func(fields *Fields, reply *easyhttp.Reply)) easyhttp.Interceptor {
+func Interceptor(logFunc func(fields *Fields, reply *easyhttp.Reply)) easyhttp.Interceptor {
 	return func(cli *easyhttp.Client, req *easyhttp.Request, do easyhttp.Doer) (reply *easyhttp.Reply, err error) {
 		startTime := time.Now()
 		fields := &Fields{

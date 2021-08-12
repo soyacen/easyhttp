@@ -8,8 +8,9 @@ import (
 	filepathutils "path/filepath"
 	"strings"
 
-	"github.com/soyacen/easyhttp"
 	"github.com/soyacen/goutils/ioutils"
+
+	"github.com/soyacen/easyhttp"
 )
 
 var (
@@ -18,7 +19,7 @@ var (
 	kContentEncodingKey = http.CanonicalHeaderKey("Content-Encoding")
 )
 
-func Download(filepath string) easyhttp.Interceptor {
+func Interceptor(filepath string) easyhttp.Interceptor {
 	return func(cli *easyhttp.Client, req *easyhttp.Request, do easyhttp.Doer) (reply *easyhttp.Reply, err error) {
 		err = createDirectory(filepathutils.Dir(filepath))
 		if err != nil {
