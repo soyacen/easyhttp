@@ -1,4 +1,4 @@
-package easyhttpsonybreaker
+package breakersony
 
 import (
 	"errors"
