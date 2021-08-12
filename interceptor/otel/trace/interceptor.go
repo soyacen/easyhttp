@@ -1,4 +1,4 @@
-package easyhttpopentracing
+package easyhttpoteltrace
 
 import (
 	"go.opentelemetry.io/otel/codes"

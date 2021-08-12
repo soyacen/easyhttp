@@ -1,4 +1,4 @@
-package easyhttpopentracing
+package easyhttpoteltrace
 
 import (
 	"net/url"
