@@ -16,7 +16,7 @@ func main() {
 	reply1, err := client.Get(
 		context.Background(),
 		"http://httpbin.org/get",
-		easyhttp.ChainInterceptor(easyhttpheader.Set("X-Forward-For", "127.93.4.5")))
+		easyhttpheader.Set("X-Forward-For", "127.93.4.5"))
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -29,7 +29,7 @@ func main() {
 	reply2, err := client.Post(
 		context.Background(),
 		"http://httpbin.org/post",
-		easyhttp.ChainInterceptor(easyhttpheader.Set("X-Trace-ID", "1id9dj1jdo0")))
+		easyhttpheader.Set("X-Trace-ID", "1id9dj1jdo0"))
 	if err != nil {
 		log.Fatalln(err)
 	}

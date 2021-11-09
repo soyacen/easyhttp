@@ -22,10 +22,10 @@ func main() {
 	reply, err := client.Get(
 		context.Background(),
 		"http://httpbin.org/get",
-		easyhttp.ChainInterceptor(easyhttplogger.Interceptor(easyhttplogger.WithLoggerFactory(
+		easyhttplogger.Interceptor(easyhttplogger.WithLoggerFactory(
 			func(ctx context.Context) easyhttplogger.Logger {
 				return &Logger{}
-			}))))
+			})))
 	if err != nil {
 		log.Fatalln(err)
 	}

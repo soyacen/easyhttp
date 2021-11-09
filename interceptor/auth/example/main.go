@@ -16,7 +16,7 @@ func ExampleBearerToken() {
 	reply, err := client.Get(
 		context.Background(),
 		"http://httpbin.org/get",
-		easyhttp.ChainInterceptor(easyhttpauth.BearerToken("dsade1232few23r2e")))
+		easyhttpauth.BearerToken("dsade1232few23r2e"))
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -32,7 +32,7 @@ func ExampleBasicAuth() {
 	reply, err := client.Get(
 		context.Background(),
 		"http://httpbin.org/get",
-		easyhttp.ChainInterceptor(easyhttpauth.BasicAuth("fakeuser", "fakepwd")))
+		easyhttpauth.BasicAuth("fakeuser", "fakepwd"))
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -48,7 +48,7 @@ func ExampleAPIKey() {
 	reply, err := client.Get(
 		context.Background(),
 		"http://httpbin.org/get",
-		easyhttp.ChainInterceptor(easyhttpauth.APIKey("token", "faketoken", easyhttpauth.AddToQuery)))
+		easyhttpauth.APIKey("token", "faketoken", easyhttpauth.AddToQuery))
 	if err != nil {
 		log.Fatalln(err)
 	}
