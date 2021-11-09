@@ -9,8 +9,6 @@ require (
 	github.com/cactus/go-statsd-client/statsd v0.0.0-20200423205355-cb0885a1018c // indirect
 	github.com/cespare/xxhash v1.1.0
 	github.com/gopherjs/gopherjs v0.0.0-20210503212227-fb464eba2686 // indirect
-	github.com/opentracing-contrib/go-stdlib v1.0.0
-	github.com/opentracing/opentracing-go v1.2.0
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
 	github.com/smartystreets/assertions v1.2.0 // indirect
 	github.com/sony/gobreaker v0.4.1
@@ -18,9 +16,9 @@ require (
 	github.com/soyacen/goutils/ioutils v0.0.0-20210616052321-7cb308881ea7
 	github.com/soyacen/goutils/stringutils v0.0.0-20210616052321-7cb308881ea7
 	github.com/stretchr/objx v0.3.0 // indirect
-	go.opentelemetry.io/otel v1.0.0-RC1
-	go.opentelemetry.io/otel/trace v1.0.0-RC1
-	golang.org/x/net v0.0.0-20210510120150-4163338589ed
+	go.opentelemetry.io/otel v1.1.0
+	go.opentelemetry.io/otel/trace v1.1.0
+	golang.org/x/net v0.0.0-20211108170745-6635138e15ea
 	golang.org/x/sys v0.0.0-20210511113859-b0526f3d8744 // indirect
 	google.golang.org/protobuf v1.26.0
 )

@@ -27,12 +27,11 @@ func main() {
 	response, err := client.Get(
 		context.Background(),
 		"http://httpbin.org/get",
-		easyhttp.ChainInterceptor(
-			func(cli *easyhttp.Client, req *easyhttp.Request, do easyhttp.Doer) (reply *easyhttp.Reply, err error) {
-				log.Println("enter interceptor 3")
-				defer log.Println("exit interceptor 3")
-				return do(cli, req)
-			}))
+		func(cli *easyhttp.Client, req *easyhttp.Request, do easyhttp.Doer) (reply *easyhttp.Reply, err error) {
+			log.Println("enter interceptor 3")
+			defer log.Println("exit interceptor 3")
+			return do(cli, req)
+		})
 	if err != nil {
 		fmt.Printf("\nError: %v", err)
 		return

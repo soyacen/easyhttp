@@ -18,12 +18,11 @@ func main() {
 	reply, err := client.Get(
 		context.Background(),
 		"http://httpbin.org/status/500",
-		easyhttp.ChainInterceptor(
-			easyhttpretry.Interceptor(
-				easyhttpretry.WithBackoff(easyhttpretry.BackoffLinear(time.Second)),
-				easyhttpretry.WithTimeout(time.Second),
-				easyhttpretry.WithMaxAttempts(2),
-			)))
+		easyhttpretry.Interceptor(
+			easyhttpretry.WithBackoff(easyhttpretry.BackoffLinear(time.Second)),
+			easyhttpretry.WithTimeout(time.Second),
+			easyhttpretry.WithMaxAttempts(2),
+		))
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -41,11 +40,10 @@ func Example400() {
 	reply, err := client.Get(
 		timeout,
 		"http://httpbin.org/status/400",
-		easyhttp.ChainInterceptor(
-			easyhttpretry.Interceptor(
-				easyhttpretry.WithTimeout(time.Second),
-				easyhttpretry.WithMaxAttempts(2),
-			)))
+		easyhttpretry.Interceptor(
+			easyhttpretry.WithTimeout(time.Second),
+			easyhttpretry.WithMaxAttempts(2),
+		))
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -63,12 +61,11 @@ func Example200() {
 	reply, err := client.Get(
 		timeout,
 		"http://httpbin.org/status/200",
-		easyhttp.ChainInterceptor(
-			easyhttpretry.Interceptor(
-				easyhttpretry.WithBackoff(easyhttpretry.BackoffLinear(time.Second)),
-				easyhttpretry.WithTimeout(time.Second),
-				easyhttpretry.WithMaxAttempts(2),
-			)))
+		easyhttpretry.Interceptor(
+			easyhttpretry.WithBackoff(easyhttpretry.BackoffLinear(time.Second)),
+			easyhttpretry.WithTimeout(time.Second),
+			easyhttpretry.WithMaxAttempts(2),
+		))
 	if err != nil {
 		log.Fatalln(err)
 	}

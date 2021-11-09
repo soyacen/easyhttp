@@ -18,7 +18,7 @@ func main() {
 	reply, err := client.Get(
 		context.Background(),
 		"http://httpbin.org/image",
-		easyhttp.ChainInterceptor(easyhttpdownload.Interceptor(filename)),
+		easyhttpdownload.Interceptor(filename),
 	)
 	if err != nil {
 		log.Fatalln(err)

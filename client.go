@@ -248,45 +248,49 @@ func NewClient(opts ...ClientOption) *Client {
 		}}
 }
 
-func (cli *Client) Get(ctx context.Context, url string, opts ...ExecuteOption) (reply *Reply, err error) {
-	return cli.Execute(ctx, http.MethodGet, url, opts...)
+func (cli *Client) Get(ctx context.Context, url string, itcptrs ...Interceptor) (reply *Reply, err error) {
+	return cli.Execute(ctx, http.MethodGet, url, itcptrs...)
 }
 
-func (cli *Client) Head(ctx context.Context, url string, opts ...ExecuteOption) (reply *Reply, err error) {
-	return cli.Execute(ctx, http.MethodHead, url, opts...)
+func (cli *Client) Head(ctx context.Context, url string, itcptrs ...Interceptor) (reply *Reply, err error) {
+	return cli.Execute(ctx, http.MethodHead, url, itcptrs...)
 }
 
-func (cli *Client) Post(ctx context.Context, url string, opts ...ExecuteOption) (reply *Reply, err error) {
-	return cli.Execute(ctx, http.MethodPost, url, opts...)
+func (cli *Client) Post(ctx context.Context, url string, itcptrs ...Interceptor) (reply *Reply, err error) {
+	return cli.Execute(ctx, http.MethodPost, url, itcptrs...)
 }
 
-func (cli *Client) Put(ctx context.Context, url string, opts ...ExecuteOption) (reply *Reply, err error) {
-	return cli.Execute(ctx, http.MethodPut, url, opts...)
+func (cli *Client) Put(ctx context.Context, url string, itcptrs ...Interceptor) (reply *Reply, err error) {
+	return cli.Execute(ctx, http.MethodPut, url, itcptrs...)
 }
 
-func (cli *Client) Patch(ctx context.Context, url string, opts ...ExecuteOption) (reply *Reply, err error) {
-	return cli.Execute(ctx, http.MethodPatch, url, opts...)
+func (cli *Client) Patch(ctx context.Context, url string, itcptrs ...Interceptor) (reply *Reply, err error) {
+	return cli.Execute(ctx, http.MethodPatch, url, itcptrs...)
 }
 
-func (cli *Client) Delete(ctx context.Context, url string, opts ...ExecuteOption) (reply *Reply, err error) {
-	return cli.Execute(ctx, http.MethodDelete, url, opts...)
+func (cli *Client) Delete(ctx context.Context, url string, itcptrs ...Interceptor) (reply *Reply, err error) {
+	return cli.Execute(ctx, http.MethodDelete, url, itcptrs...)
 }
 
-func (cli *Client) Connect(ctx context.Context, url string, opts ...ExecuteOption) (reply *Reply, err error) {
-	return cli.Execute(ctx, http.MethodConnect, url, opts...)
+func (cli *Client) Connect(ctx context.Context, url string, itcptrs ...Interceptor) (reply *Reply, err error) {
+	return cli.Execute(ctx, http.MethodConnect, url, itcptrs...)
 }
 
-func (cli *Client) Options(ctx context.Context, url string, opts ...ExecuteOption) (reply *Reply, err error) {
-	return cli.Execute(ctx, http.MethodOptions, url, opts...)
+func (cli *Client) Options(ctx context.Context, url string, itcptrs ...Interceptor) (reply *Reply, err error) {
+	return cli.Execute(ctx, http.MethodOptions, url, itcptrs...)
 }
 
-func (cli *Client) Trace(ctx context.Context, url string, opts ...ExecuteOption) (reply *Reply, err error) {
-	return cli.Execute(ctx, http.MethodTrace, url, opts...)
+func (cli *Client) Trace(ctx context.Context, url string, itcptrs ...Interceptor) (reply *Reply, err error) {
+	return cli.Execute(ctx, http.MethodTrace, url, itcptrs...)
 }
 
-func (cli *Client) Execute(ctx context.Context, method string, url string, opts ...ExecuteOption) (reply *Reply, err error) {
+func (cli *Client) Execute(ctx context.Context, method string, url string, itcptrs ...Interceptor) (reply *Reply, err error) {
 	options := defaultExecuteOptions()
-	options.apply(opts...)
+	var execOpts []ExecuteOption
+	if len(itcptrs) > 0 {
+		execOpts = append(execOpts, ChainInterceptor(itcptrs...))
+	}
+	options.apply(execOpts...)
 	request := &Request{opts: options}
 	var rawReq *http.Request
 	rawReq, err = http.NewRequestWithContext(ctx, method, url, nil)
@@ -295,14 +299,14 @@ func (cli *Client) Execute(ctx context.Context, method string, url string, opts 
 	}
 	request.rawRequest = rawReq
 
-	interceptors := make([]Interceptor, 0, len(cli.opts.interceptors)+len(request.opts.interceptors))
-	for _, interceptor := range cli.opts.interceptors {
-		interceptors = append(interceptors, interceptor)
+	allitcptrs := make([]Interceptor, 0, len(cli.opts.interceptors)+len(request.opts.interceptors))
+	for _, itcptr := range cli.opts.interceptors {
+		allitcptrs = append(allitcptrs, itcptr)
 	}
 	for _, interceptor := range request.opts.interceptors {
-		interceptors = append(interceptors, interceptor)
+		allitcptrs = append(allitcptrs, interceptor)
 	}
-	request.opts.interceptor = chainInterceptors(interceptors...)
+	request.opts.interceptor = chainInterceptors(allitcptrs...)
 
 	return cli.execute(request)
 }
