@@ -8,6 +8,8 @@ import (
 	"net/url"
 	"strings"
 	"time"
+
+	"github.com/soyacen/goutils/backoffutils"
 )
 
 var (
@@ -51,7 +53,7 @@ func WithMaxAttempts(maxAttempts uint) Option {
 }
 
 // WithBackoff sets the `BackoffFunc` used to control time between retries.
-func WithBackoff(bf BackoffFunc) Option {
+func WithBackoff(bf backoffutils.BackoffFunc) Option {
 	return Option{applyFunc: func(o *options) {
 		o.backoffFunc = bf
 	}}
@@ -75,7 +77,7 @@ func WithTimeout(timeout time.Duration) Option {
 type options struct {
 	maxAttempts               uint
 	timeout                   time.Duration
-	backoffFunc               BackoffFunc
+	backoffFunc               backoffutils.BackoffFunc
 	shouldRetryWithError      RetryWithError
 	shouldRetryWithStatusCode RetryWithStatusCode
 }
@@ -144,4 +146,12 @@ func defaultRetryWithStatusCode(statusCode int) bool {
 		}
 	}
 	return false
+}
+
+// BackoffExponentialWithJitter creates an exponential backoff like
+// BackoffExponential does, but adds jitter.
+func BackoffExponentialWithJitter(scalar time.Duration, jitterFraction float64) backoffutils.BackoffFunc {
+	return func(ctx context.Context, attempt uint) time.Duration {
+		return backoffutils.JitterUp(backoffutils.Exponential(scalar), jitterFraction)(ctx, attempt)
+	}
 }

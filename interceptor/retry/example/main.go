@@ -7,6 +7,8 @@ import (
 	"net/http/httputil"
 	"time"
 
+	"github.com/soyacen/goutils/backoffutils"
+
 	"github.com/soyacen/easyhttp"
 
 	easyhttpretry "github.com/soyacen/easyhttp/interceptor/retry"
@@ -19,7 +21,7 @@ func main() {
 		context.Background(),
 		"http://httpbin.org/status/500",
 		easyhttpretry.Interceptor(
-			easyhttpretry.WithBackoff(easyhttpretry.BackoffLinear(time.Second)),
+			easyhttpretry.WithBackoff(backoffutils.Linear(time.Second)),
 			easyhttpretry.WithTimeout(time.Second),
 			easyhttpretry.WithMaxAttempts(2),
 		))
@@ -62,7 +64,7 @@ func Example200() {
 		timeout,
 		"http://httpbin.org/status/200",
 		easyhttpretry.Interceptor(
-			easyhttpretry.WithBackoff(easyhttpretry.BackoffLinear(time.Second)),
+			easyhttpretry.WithBackoff(backoffutils.Linear(time.Second)),
 			easyhttpretry.WithTimeout(time.Second),
 			easyhttpretry.WithMaxAttempts(2),
 		))

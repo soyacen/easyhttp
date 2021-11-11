@@ -13,7 +13,9 @@ require (
 	github.com/smartystreets/assertions v1.2.0 // indirect
 	github.com/sony/gobreaker v0.4.1
 	github.com/soyacen/bytebufferpool v1.0.1
+	github.com/soyacen/goutils/backoffutils v0.0.0-20211111075736-69a103e1d799
 	github.com/soyacen/goutils/ioutils v0.0.0-20210616052321-7cb308881ea7
+	github.com/soyacen/goutils/retryutils v0.0.0-20211111101840-81fc4a901c82 // indirect
 	github.com/soyacen/goutils/stringutils v0.0.0-20210616052321-7cb308881ea7
 	github.com/stretchr/objx v0.3.0 // indirect
 	go.opentelemetry.io/otel v1.1.0

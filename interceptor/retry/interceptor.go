@@ -100,7 +100,7 @@ func Interceptor(opts ...Option) easyhttp.Interceptor {
 }
 
 func waitRetryBackoff(attempt uint, parentCtx context.Context, callOpts *options) error {
-	waitTime := callOpts.backoffFunc(attempt)
+	waitTime := callOpts.backoffFunc(parentCtx, attempt)
 	if waitTime > 0 {
 		timer := time.NewTimer(waitTime)
 		select {
